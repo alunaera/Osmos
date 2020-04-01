@@ -1,6 +1,8 @@
-﻿namespace Osmos
+﻿using System.Drawing;
+
+namespace Osmos
 {
-    class PlayerCircle : GameObject
+    internal class PlayerCircle : GameObject
     {
         public PlayerCircle(int positionX, int positionY)
         {
@@ -8,7 +10,7 @@
             PositionX = positionX;
             PositionY = positionY;
 
-            Radius = 10;
+            Radius = 15;
             VectorX = 1;
             VectorY = -1;
         }
@@ -17,6 +19,11 @@
         {
             PositionX += VectorX;
             PositionY += VectorY;
+        }
+
+        public void Draw(Graphics graphics)
+        {
+            graphics.FillEllipse(Brushes.Green, PositionX, PositionY, Radius * 2, Radius * 2);
         }
     }
 }
