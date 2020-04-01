@@ -16,11 +16,11 @@ namespace Osmos
             game.Defeat += () =>
             {
                 Timer.Enabled = false;
-                game.StartGame(ClientRectangle.Width, ClientRectangle.Height);
+                game.StartGame(gameField.ClientRectangle.Width, gameField.ClientRectangle.Height);
                 Timer.Enabled = true;
             };
 
-            game.StartGame(ClientRectangle.Width, ClientRectangle.Height);
+            game.StartGame(gameField.ClientRectangle.Width, gameField.ClientRectangle.Height);
         }
 
         private void Draw(object sender, PaintEventArgs e)

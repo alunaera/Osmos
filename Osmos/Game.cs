@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace Osmos
@@ -9,6 +10,7 @@ namespace Osmos
 
         private int gameFieldWidth;
         private int gameFieldHeight;
+        private List<GameObject> gameObjects;
 
         public event Action Defeat = delegate { };
         public event Action Victory = delegate { };
@@ -17,16 +19,24 @@ namespace Osmos
         {
             this.gameFieldWidth = gameFieldWidth;
             this.gameFieldHeight = gameFieldHeight;
+
+            gameObjects = new List<GameObject> {new PlayerCircle(150, 150)};
+
         }
 
         public void Update()
         {
-
+            foreach (GameObject gameObject in gameObjects)
+            {
+                gameObject.Update();
+                gameObject.ProcessingRepulsion(gameFieldWidth, gameFieldHeight);
+            }
         }
 
         public void Draw(Graphics graphics)
         {
-
+            foreach (GameObject gameObject in gameObjects)
+                gameObject.Draw(graphics, Brushes.Black);
         }
     }
 }

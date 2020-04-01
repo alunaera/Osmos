@@ -40,8 +40,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gameField.Location = new System.Drawing.Point(12, 12);
+            this.gameField.Margin = new System.Windows.Forms.Padding(0);
             this.gameField.Name = "gameField";
-            this.gameField.Size = new System.Drawing.Size(1542, 720);
+            this.gameField.Size = new System.Drawing.Size(1356, 609);
             this.gameField.TabIndex = 0;
             this.gameField.TabStop = false;
             this.gameField.Paint += new System.Windows.Forms.PaintEventHandler(this.Draw);
@@ -49,14 +50,14 @@
             // Timer
             // 
             this.Timer.Enabled = true;
-            this.Timer.Interval = 15;
+            this.Timer.Interval = 1;
             this.Timer.Tick += new System.EventHandler(this.TickTimer);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1566, 744);
+            this.ClientSize = new System.Drawing.Size(1380, 633);
             this.Controls.Add(this.gameField);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
