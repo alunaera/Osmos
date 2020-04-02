@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace Osmos
 {
@@ -53,7 +54,6 @@ namespace Osmos
         public void Draw(Graphics graphics)
         {
             foreach (GameObject gameObject in gameObjects)
-            {
                 switch (gameObject.ObjectType)
                 {
                     case ObjectType.PlayerCircle:
@@ -63,8 +63,7 @@ namespace Osmos
                         gameObject.Draw(graphics, gameObject.Radius <= PlayerCircle.Radius ? Brushes.Blue : Brushes.Red);
                         break;
                 }
-            }
-
+            
             DrawInterface(graphics);
         }
 

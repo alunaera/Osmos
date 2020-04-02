@@ -9,9 +9,8 @@
             PositionY = positionY;
             Radius = radius;
 
-            Radius = 10;
-            VectorX = 1;
-            VectorY = -1;
+            VectorX = 0;
+            VectorY = 0;
         }
 
         public override void Update()

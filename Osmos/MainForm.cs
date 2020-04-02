@@ -16,6 +16,7 @@ namespace Osmos
             game.Defeat += () =>
             {
                 Timer.Enabled = false;
+                MessageBox.Show("Game over");
                 game.StartGame(gameField.ClientRectangle.Width, gameField.ClientRectangle.Height);
                 Timer.Enabled = true;
             };
