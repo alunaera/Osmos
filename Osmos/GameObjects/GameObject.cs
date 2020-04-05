@@ -37,15 +37,15 @@ namespace Osmos
             }
 
             // In these blocks we multiply radius by 2 for correct animation
-            if (PositionX + Radius * 2 > gameFieldWidth)
+            if (PositionX + Radius >= gameFieldWidth)
             {
-                SetNewPosition(gameFieldWidth - (int)Radius * 2, PositionY);
+                SetNewPosition(gameFieldWidth - (int)Radius, PositionY);
                 SetOppositeVector(VectorDirection.X);
             }
 
-            if (PositionY + Radius * 2 > gameFieldHeight)
+            if (PositionY + Radius >= gameFieldHeight)
             {
-                SetNewPosition(PositionX, gameFieldHeight - (int)Radius * 2);
+                SetNewPosition(PositionX, gameFieldHeight - (int)Radius);
                 SetOppositeVector(VectorDirection.Y);
             }
         }
@@ -78,7 +78,7 @@ namespace Osmos
 
         public void Draw(Graphics graphics, Brush brush)
         {
-            graphics.FillEllipse(brush, PositionX, PositionY, (int)Radius * 2, (int)Radius * 2);
+            graphics.FillEllipse(brush, PositionX - (int)Radius, PositionY - (int)Radius, (int)Radius * 2, (int)Radius * 2);
         }
     }
 }

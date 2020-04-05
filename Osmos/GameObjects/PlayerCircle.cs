@@ -23,7 +23,7 @@ namespace Osmos
 
         public void Draw(Graphics graphics)
         {
-            graphics.FillEllipse(Brushes.Green, PositionX, PositionY, (int)Radius * 2, (int)Radius * 2);
+            graphics.FillEllipse(Brushes.Green, PositionX - (int)Radius, PositionY - (int)Radius, (int)Radius * 2, (int)Radius * 2);
         }
     }
 }
