@@ -30,13 +30,13 @@ namespace Osmos
 
         private void GenerateCircles()
         {
-            int circlesCount = Random.Next(50, 60);
+            int circlesCount = Random.Next(90, 100);
 
             for (int i = 0; i < circlesCount; i++)
             {
                 int positionX = Random.Next(0, gameFieldWidth);
                 int positionY = Random.Next(0, gameFieldHeight);
-                int radius = Random.Next(10, 30);
+                int radius = Random.Next(10, 50);
 
                 gameObjects.Add(new EnemyCircle(positionX, positionY, radius));
             }
@@ -49,6 +49,46 @@ namespace Osmos
                 gameObject.Update();
                 gameObject.ProcessingRepulsion(gameFieldWidth, gameFieldHeight);
             }
+
+            foreach (GameObject gameObject in gameObjects)
+            {
+                foreach (GameObject nextGameObject in gameObjects)
+                {
+                    double valueOfIntersection = gameObject.Radius + nextGameObject.Radius - gameObject.GetDistanceToObject(nextGameObject);
+
+                    if (valueOfIntersection >= 0 && gameObject.Radius != nextGameObject.Radius)
+                    {
+                        if (gameObject.Radius > nextGameObject.Radius)
+                        {
+                            gameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(gameObject.Radius, nextGameObject.Radius, valueOfIntersection));
+                            nextGameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(gameObject.Radius, nextGameObject.Radius, valueOfIntersection));
+                        }
+                        else
+                        {
+                            gameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(nextGameObject.Radius, gameObject.Radius, valueOfIntersection));
+                            nextGameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(nextGameObject.Radius, gameObject.Radius, valueOfIntersection));
+                        }
+                    }
+                }
+            }
+
+            gameObjects.RemoveAll(gameObject =>
+                gameObject.ObjectType != ObjectType.PlayerCircle && gameObject.Radius <= 0);
+        }
+
+        private double GetValueOfIncreaseLargerCircle(double largerRadius, double smallerRadius, double valueOfIntersection)
+        {
+            double b = largerRadius - smallerRadius + valueOfIntersection;
+            double c = valueOfIntersection * (valueOfIntersection - 2 * smallerRadius) / 2;
+            double sqrtOfDiscriminant = Math.Sqrt(b * b - 4 * c);
+
+            return (-b + sqrtOfDiscriminant) / 2;
+        }
+
+        private double GetValueOfDecreaseSmallerCircle(double largerRadius, double smallerRadius, double valueOfIntersection)
+        {
+            return -valueOfIntersection -
+                   GetValueOfIncreaseLargerCircle(largerRadius, smallerRadius, valueOfIntersection);
         }
 
         public void Draw(Graphics graphics)
@@ -70,7 +110,6 @@ namespace Osmos
         private void DrawInterface(Graphics graphics)
         {
             graphics.DrawString("Summary area: " + (int)gameObjects.Sum(gameObject => gameObject.Area), font, Brushes.Black, gameFieldWidth - 200, 10);
-           // graphics.DrawString("Player's health: " + PlayerShip.Health, font, Brushes.Black, gameFieldWidth - 165, 30);
         }
     }
 }

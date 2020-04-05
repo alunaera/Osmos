@@ -10,7 +10,7 @@ namespace Osmos
         public int PositionY { get; protected set; }
         public int VectorX { get; protected set; }
         public int VectorY { get; protected set; }
-        public int Radius { get; protected set; }
+        public double Radius { get; protected set; }
 
         public double Area => Radius * Radius * Math.PI;
 
@@ -26,28 +26,33 @@ namespace Osmos
         {
             if (PositionX - Radius < 0)
             {
-                SetNewPosition(Radius, PositionY);
+                SetNewPosition((int)Radius, PositionY);
                 SetOppositeVector(VectorDirection.X);
             }
 
             if (PositionY - Radius < 0)
             {
-                SetNewPosition(PositionX, Radius);
+                SetNewPosition(PositionX, (int)Radius);
                 SetOppositeVector(VectorDirection.Y);
             }
 
             // In these blocks we multiply radius by 2 for correct animation
             if (PositionX + Radius * 2 > gameFieldWidth)
             {
-                SetNewPosition(gameFieldWidth - Radius * 2, PositionY);
+                SetNewPosition(gameFieldWidth - (int)Radius * 2, PositionY);
                 SetOppositeVector(VectorDirection.X);
             }
 
             if (PositionY + Radius * 2 > gameFieldHeight)
             {
-                SetNewPosition(PositionX, gameFieldHeight - Radius * 2);
+                SetNewPosition(PositionX, gameFieldHeight - (int)Radius * 2);
                 SetOppositeVector(VectorDirection.Y);
             }
+        }
+
+        public void ChangeRadius(double valueOfChange)
+        {
+            Radius += valueOfChange;
         }
 
         private void SetOppositeVector(VectorDirection vectorDirection)
@@ -63,22 +68,17 @@ namespace Osmos
             }
         }
 
-        public bool IntersectsWith(GameObject gameObject)
+        public double GetDistanceToObject(GameObject gameObject)
         {
-            return GetSquareDistanceToObject(gameObject.PositionX, gameObject.PositionY) <= Math.Pow(Radius + gameObject.Radius, 2) / 4;
-        }
+            double componentX = Math.Pow(PositionX - gameObject.PositionX, 2);
+            double componentY = Math.Pow(PositionY - gameObject.PositionY, 2);
 
-        private int GetSquareDistanceToObject(int objectX, int objectY)
-        {
-            double componentX = Math.Pow(PositionX - objectX, 2);
-            double componentY = Math.Pow(PositionY - objectY, 2);
-
-            return (int)(componentX + componentY);
+            return Math.Sqrt(componentX + componentY);
         }
 
         public void Draw(Graphics graphics, Brush brush)
         {
-            graphics.FillEllipse(brush, PositionX, PositionY, Radius * 2, Radius * 2);
+            graphics.FillEllipse(brush, PositionX, PositionY, (int)Radius * 2, (int)Radius * 2);
         }
     }
 }
