@@ -21,6 +21,14 @@ namespace Osmos
                 Timer.Enabled = true;
             };
 
+            game.Victory += () =>
+            {
+                Timer.Enabled = false;
+                MessageBox.Show("You win");
+                game.StartGame(gameField.ClientRectangle.Width, gameField.ClientRectangle.Height);
+                Timer.Enabled = true;
+            };
+
             game.StartGame(gameField.ClientRectangle.Width, gameField.ClientRectangle.Height);
         }
 

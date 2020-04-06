@@ -56,27 +56,33 @@ namespace Osmos
                 {
                     double valueOfIntersection = gameObject.Radius + nextGameObject.Radius - gameObject.GetDistanceToObject(nextGameObject);
 
-                    if (valueOfIntersection >= 0 && gameObject.Radius != nextGameObject.Radius)
+                    if (!(valueOfIntersection >= 0) || gameObject.Radius == nextGameObject.Radius)
+                        continue;
+
+                    if (gameObject.Radius > nextGameObject.Radius)
                     {
-                        if (gameObject.Radius > nextGameObject.Radius)
-                        {
-                            gameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(gameObject.Radius, nextGameObject.Radius, valueOfIntersection));
-                            nextGameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(gameObject.Radius, nextGameObject.Radius, valueOfIntersection));
-                        }
-                        else
-                        {
-                            gameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(nextGameObject.Radius, gameObject.Radius, valueOfIntersection));
-                            nextGameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(nextGameObject.Radius, gameObject.Radius, valueOfIntersection));
-                        }
+                        gameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(gameObject.Radius, nextGameObject.Radius, valueOfIntersection));
+                        nextGameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(gameObject.Radius, nextGameObject.Radius, valueOfIntersection));
+                    }
+                    else
+                    {
+                        gameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(nextGameObject.Radius, gameObject.Radius, valueOfIntersection));
+                        nextGameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(nextGameObject.Radius, gameObject.Radius, valueOfIntersection));
                     }
                 }
             }
 
             gameObjects.RemoveAll(gameObject =>
                 gameObject.ObjectType != ObjectType.PlayerCircle && gameObject.Radius <= 0);
+
+            if (PlayerCircle.Radius <= 0)
+                Defeat();
+
+            if (PlayerCircle.Area >= gameObjects.Sum(gameObject => gameObject.Area) / 2)
+                Victory();
         }
 
-        private double GetValueOfIncreaseLargerCircle(double largerRadius, double smallerRadius, double valueOfIntersection)
+        private static double GetValueOfIncreaseLargerCircle(double largerRadius, double smallerRadius, double valueOfIntersection)
         {
             double b = largerRadius - smallerRadius + valueOfIntersection;
             double c = valueOfIntersection * (valueOfIntersection - 2 * smallerRadius) / 2;
@@ -85,7 +91,7 @@ namespace Osmos
             return (-b + sqrtOfDiscriminant) / 2;
         }
 
-        private double GetValueOfDecreaseSmallerCircle(double largerRadius, double smallerRadius, double valueOfIntersection)
+        private static double GetValueOfDecreaseSmallerCircle(double largerRadius, double smallerRadius, double valueOfIntersection)
         {
             return -valueOfIntersection -
                    GetValueOfIncreaseLargerCircle(largerRadius, smallerRadius, valueOfIntersection);
