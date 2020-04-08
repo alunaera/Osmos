@@ -8,7 +8,7 @@ namespace Osmos
 {
     internal class Game
     {
-        private static readonly Random Random = new Random();
+        public static readonly Random Random = new Random();
         private readonly Font font = new Font("Arial", 15);
 
         private int gameFieldWidth;
@@ -33,13 +33,7 @@ namespace Osmos
             int circlesCount = Random.Next(90, 100);
 
             for (int i = 0; i < circlesCount; i++)
-            {
-                int positionX = Random.Next(0, gameFieldWidth);
-                int positionY = Random.Next(0, gameFieldHeight);
-                int radius = Random.Next(10, 50);
-
-                gameObjects.Add(new EnemyCircle(positionX, positionY, radius));
-            }
+                gameObjects.Add(new EnemyCircle(gameFieldWidth, gameFieldHeight));
         }
 
         public void Update()
@@ -61,13 +55,17 @@ namespace Osmos
 
                     if (gameObject.Radius > nextGameObject.Radius)
                     {
-                        gameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(gameObject.Radius, nextGameObject.Radius, valueOfIntersection));
+                        double nextGameObjectPreviousArea = nextGameObject.Area;
                         nextGameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(gameObject.Radius, nextGameObject.Radius, valueOfIntersection));
+
+                        gameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(gameObject, nextGameObjectPreviousArea - nextGameObject.Area));
                     }
                     else
                     {
+                        double gameObjectPreviousArea = gameObject.Area;
                         gameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(nextGameObject.Radius, gameObject.Radius, valueOfIntersection));
-                        nextGameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(nextGameObject.Radius, gameObject.Radius, valueOfIntersection));
+
+                        nextGameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(nextGameObject, gameObjectPreviousArea - gameObject.Area));
                     }
                 }
             }
@@ -82,19 +80,18 @@ namespace Osmos
                 Victory();
         }
 
-        private static double GetValueOfIncreaseLargerCircle(double largerRadius, double smallerRadius, double valueOfIntersection)
+        private static double GetValueOfIncreaseLargerCircle(GameObject gameObject, double absorbedArea)
+        {
+            return Math.Sqrt((gameObject.Area + absorbedArea) / Math.PI) - gameObject.Radius;
+        }
+
+        private static double GetValueOfDecreaseSmallerCircle(double largerRadius, double smallerRadius, double valueOfIntersection)
         {
             double b = largerRadius - smallerRadius + valueOfIntersection;
             double c = valueOfIntersection * (valueOfIntersection - 2 * smallerRadius) / 2;
             double sqrtOfDiscriminant = Math.Sqrt(b * b - 4 * c);
 
-            return (-b + sqrtOfDiscriminant) / 2;
-        }
-
-        private static double GetValueOfDecreaseSmallerCircle(double largerRadius, double smallerRadius, double valueOfIntersection)
-        {
-            return -valueOfIntersection -
-                   GetValueOfIncreaseLargerCircle(largerRadius, smallerRadius, valueOfIntersection);
+            return -valueOfIntersection - (sqrtOfDiscriminant - b) / 2;
         }
 
         public void Draw(Graphics graphics)

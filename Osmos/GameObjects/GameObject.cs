@@ -36,7 +36,6 @@ namespace Osmos
                 SetOppositeVector(VectorDirection.Y);
             }
 
-            // In these blocks we multiply radius by 2 for correct animation
             if (PositionX + Radius >= gameFieldWidth)
             {
                 SetNewPosition(gameFieldWidth - (int)Radius, PositionY);

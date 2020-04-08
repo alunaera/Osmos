@@ -2,15 +2,15 @@
 {
     internal class EnemyCircle : GameObject
     {
-        public EnemyCircle(int positionX, int positionY, int radius)
+        public EnemyCircle(int gameFieldWidth, int gameFieldHeight)
         {
             ObjectType = ObjectType.EnemyCircle;
-            PositionX = positionX;
-            PositionY = positionY;
-            Radius = radius;
+            PositionX = Game.Random.Next(0, gameFieldWidth);
+            PositionY = Game.Random.Next(0, gameFieldHeight);
+            Radius = Game.Random.Next(10, 40);
 
-            VectorX = 0;
-            VectorY = 0;
+            VectorX = Game.Random.Next(-1, 1);
+            VectorY = Game.Random.Next(-1, 1);
         }
 
         public override void Update()

@@ -10,7 +10,7 @@ namespace Osmos
             PositionX = positionX;
             PositionY = positionY;
 
-            Radius = 40;
+            Radius = Game.Random.Next(40, 60);
             VectorX = 1;
             VectorY = -1;
         }
