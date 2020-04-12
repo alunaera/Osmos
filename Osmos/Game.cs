@@ -56,16 +56,34 @@ namespace Osmos
                     if (gameObject.Radius > nextGameObject.Radius)
                     {
                         double nextGameObjectPreviousArea = nextGameObject.Area;
-                        nextGameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(gameObject.Radius, nextGameObject.Radius, valueOfIntersection));
+                        double nextGameObjectPreviousImpulse = nextGameObject.Impulse;
+                        double gameObjectPreviousImpulse = gameObject.Impulse;
+                        double gameObjectPreviousVector = gameObject.Vector;
 
+                        nextGameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(gameObject.Radius, nextGameObject.Radius, valueOfIntersection));
                         gameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(gameObject, nextGameObjectPreviousArea - nextGameObject.Area));
+
+                        double speedReductionPercentage =
+                            (gameObjectPreviousImpulse + nextGameObjectPreviousImpulse - nextGameObject.Impulse) /
+                            (gameObject.Area * gameObjectPreviousVector);
+
+                        gameObject.ChangeVector(speedReductionPercentage);
                     }
                     else
                     {
                         double gameObjectPreviousArea = gameObject.Area;
-                        gameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(nextGameObject.Radius, gameObject.Radius, valueOfIntersection));
+                        double gameObjectPreviousImpulse = gameObject.Impulse;
+                        double nextGameObjectPreviousImpulse = nextGameObject.Impulse;
+                        double nextGameObjectPreviousVector = nextGameObject.Vector;
 
+                        gameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(nextGameObject.Radius, gameObject.Radius, valueOfIntersection));
                         nextGameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(nextGameObject, gameObjectPreviousArea - gameObject.Area));
+
+                        double speedReductionPercentage =
+                            (nextGameObjectPreviousImpulse + gameObjectPreviousImpulse - gameObject.Impulse) /
+                            (nextGameObject.Area * nextGameObjectPreviousVector);
+
+                        nextGameObject.ChangeVector(speedReductionPercentage);
                     }
                 }
             }
@@ -78,6 +96,7 @@ namespace Osmos
 
             if (PlayerCircle.Area >= gameObjects.Sum(gameObject => gameObject.Area) / 2)
                 Victory();
+
         }
 
         private static double GetValueOfIncreaseLargerCircle(GameObject gameObject, double absorbedArea)
@@ -92,6 +111,11 @@ namespace Osmos
             double sqrtOfDiscriminant = Math.Sqrt(b * b - 4 * c);
 
             return -valueOfIntersection - (sqrtOfDiscriminant - b) / 2;
+        }
+
+        private static double GetNewLargerCirclesVector()
+        {
+            return 0;
         }
 
         public void Draw(Graphics graphics)
@@ -112,7 +136,8 @@ namespace Osmos
 
         private void DrawInterface(Graphics graphics)
         {
-            graphics.DrawString("Summary area: " + (int)gameObjects.Sum(gameObject => gameObject.Area), font, Brushes.Black, gameFieldWidth - 200, 10);
+            graphics.DrawString("Summary area: " + (int)gameObjects.Sum(gameObject => gameObject.Area), font, Brushes.Black, gameFieldWidth - 250, 10);
+            graphics.DrawString("Summary impulse: " + (int)gameObjects.Sum(gameObject => gameObject.Impulse), font, Brushes.Black, gameFieldWidth - 250, 30);
         }
     }
 }

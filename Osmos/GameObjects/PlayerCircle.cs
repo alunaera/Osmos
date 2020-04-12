@@ -11,19 +11,19 @@ namespace Osmos
             PositionY = positionY;
 
             Radius = Game.Random.Next(40, 60);
-            VectorX = 1;
-            VectorY = -1;
+            VectorX = Game.Random.Next(-10, 10);
+            VectorY = Game.Random.Next(-10, 10);
         }
 
         public override void Update()
         {
-            PositionX += VectorX;
-            PositionY += VectorY;
+            PositionX += (int)VectorX;
+            PositionY += (int)VectorY;
         }
 
         public void Draw(Graphics graphics)
         {
-            graphics.FillEllipse(Brushes.Green, PositionX - (int)Radius, PositionY - (int)Radius, (int)Radius * 2, (int)Radius * 2);
+            graphics.FillEllipse(Brushes.Green, (int)(PositionX - Radius), (int)(PositionY - Radius), (int)Radius * 2, (int)Radius * 2);
         }
     }
 }

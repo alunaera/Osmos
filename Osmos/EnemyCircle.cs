@@ -9,14 +9,14 @@
             PositionY = Game.Random.Next(0, gameFieldHeight);
             Radius = Game.Random.Next(10, 40);
 
-            VectorX = Game.Random.Next(-1, 1);
-            VectorY = Game.Random.Next(-1, 1);
+            VectorX = Game.Random.Next(-5, 5);
+            VectorY = Game.Random.Next(-5, 5);
         }
 
         public override void Update()
         {
-            PositionX += VectorX;
-            PositionY += VectorY;
+            PositionX += (int)VectorX;
+            PositionY += (int)VectorY;
         }
     }
 }

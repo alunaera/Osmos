@@ -6,17 +6,19 @@ namespace Osmos
     internal abstract class GameObject
     {
         public ObjectType ObjectType { get; protected set; }
-        public int PositionX { get; protected set; }
-        public int PositionY { get; protected set; }
-        public int VectorX { get; protected set; }
-        public int VectorY { get; protected set; }
+        public double PositionX { get; protected set; }
+        public double PositionY { get; protected set; }
+        public double VectorX { get; protected set; }
+        public double VectorY { get; protected set; }
         public double Radius { get; protected set; }
 
         public double Area => Radius * Radius * Math.PI;
+        public double Vector => Math.Sqrt(VectorX * VectorX + VectorY * VectorY);
+        public double Impulse => Area * Vector;
 
         public abstract void Update();
 
-        public void SetNewPosition(int positionX, int positionY)
+        public void SetNewPosition(double positionX, double positionY)
         {
             PositionX = positionX;
             PositionY = positionY;
@@ -54,6 +56,12 @@ namespace Osmos
             Radius += valueOfChange;
         }
 
+        public void ChangeVector(double reductionPercentage)
+        {
+            VectorX *= reductionPercentage;
+            VectorY *= reductionPercentage;
+        }
+
         private void SetOppositeVector(VectorDirection vectorDirection)
         {
             switch (vectorDirection)
@@ -77,7 +85,7 @@ namespace Osmos
 
         public void Draw(Graphics graphics, Brush brush)
         {
-            graphics.FillEllipse(brush, PositionX - (int)Radius, PositionY - (int)Radius, (int)Radius * 2, (int)Radius * 2);
+            graphics.FillEllipse(brush, (int)(PositionX - Radius), (int)(PositionY - Radius), (int)Radius * 2, (int)Radius * 2);
         }
     }
 }
