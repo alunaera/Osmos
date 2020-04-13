@@ -42,7 +42,7 @@
             this.gameField.Location = new System.Drawing.Point(12, 12);
             this.gameField.Margin = new System.Windows.Forms.Padding(0);
             this.gameField.Name = "gameField";
-            this.gameField.Size = new System.Drawing.Size(1356, 609);
+            this.gameField.Size = new System.Drawing.Size(1477, 708);
             this.gameField.TabIndex = 0;
             this.gameField.TabStop = false;
             this.gameField.Paint += new System.Windows.Forms.PaintEventHandler(this.Draw);
@@ -54,9 +54,8 @@
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1380, 633);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.ClientSize = new System.Drawing.Size(1501, 732);
             this.Controls.Add(this.gameField);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;

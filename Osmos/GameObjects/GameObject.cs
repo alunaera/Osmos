@@ -56,6 +56,12 @@ namespace Osmos
             Radius += valueOfChange;
         }
 
+        public void SetNewVector(double vectorX, double vectorY)
+        {
+            VectorX = vectorX;
+            VectorY = vectorY;
+        }
+
         public void ChangeVector(double reductionPercentage)
         {
             VectorX *= reductionPercentage;

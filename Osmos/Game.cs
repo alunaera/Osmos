@@ -60,6 +60,14 @@ namespace Osmos
                         double gameObjectPreviousImpulse = gameObject.Impulse;
                         double gameObjectPreviousVector = gameObject.Vector;
 
+                        double gameObjectNewVectorX =
+                            (gameObject.VectorX * gameObject.Area + nextGameObject.VectorX * nextGameObject.Area) / gameObject.Area;
+
+                        double gameObjectNewVectorY =
+                            (gameObject.VectorY * gameObject.Area + nextGameObject.VectorY * nextGameObject.Area) / gameObject.Area;
+
+                        gameObject.SetNewVector(gameObjectNewVectorX, gameObjectNewVectorY );
+
                         nextGameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(gameObject.Radius, nextGameObject.Radius, valueOfIntersection));
                         gameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(gameObject, nextGameObjectPreviousArea - nextGameObject.Area));
 
@@ -75,6 +83,14 @@ namespace Osmos
                         double gameObjectPreviousImpulse = gameObject.Impulse;
                         double nextGameObjectPreviousImpulse = nextGameObject.Impulse;
                         double nextGameObjectPreviousVector = nextGameObject.Vector;
+
+                        double nextGameObjectNewVectorX =
+                            (gameObject.VectorX * gameObject.Area + nextGameObject.VectorX * nextGameObject.Area) / nextGameObject.Area;
+
+                        double nextGameObjectNewVectorY =
+                            (gameObject.VectorY * gameObject.Area + nextGameObject.VectorY * nextGameObject.Area) / nextGameObject.Area;
+
+                        nextGameObject.SetNewVector(nextGameObjectNewVectorX, nextGameObjectNewVectorY);
 
                         gameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(nextGameObject.Radius, gameObject.Radius, valueOfIntersection));
                         nextGameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(nextGameObject, gameObjectPreviousArea - gameObject.Area));
