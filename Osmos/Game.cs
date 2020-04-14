@@ -30,7 +30,7 @@ namespace Osmos
 
         private void GenerateCircles()
         {
-            int circlesCount = Random.Next(90, 100);
+            int circlesCount = Random.Next(400, 1000);
 
             for (int i = 0; i < circlesCount; i++)
                 gameObjects.Add(new EnemyCircle(gameFieldWidth, gameFieldHeight));
@@ -61,12 +61,13 @@ namespace Osmos
                         double gameObjectPreviousVector = gameObject.Vector;
 
                         double gameObjectNewVectorX =
-                            (gameObject.VectorX * gameObject.Area + nextGameObject.VectorX * nextGameObject.Area) / gameObject.Area;
+                            (gameObject.VectorX * gameObject.Area + nextGameObject.VectorX * nextGameObject.Area) / (gameObject.Area + nextGameObject.Area) ;
 
                         double gameObjectNewVectorY =
-                            (gameObject.VectorY * gameObject.Area + nextGameObject.VectorY * nextGameObject.Area) / gameObject.Area;
+                            (gameObject.VectorY * gameObject.Area + nextGameObject.VectorY * nextGameObject.Area) / (gameObject.Area + nextGameObject.Area);
 
-                        gameObject.SetNewVector(gameObjectNewVectorX, gameObjectNewVectorY );
+                        gameObject.SetNewVector(gameObjectNewVectorX, gameObjectNewVectorY);
+                        nextGameObject.SetNewVector(gameObjectNewVectorX, gameObjectNewVectorY);
 
                         nextGameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(gameObject.Radius, nextGameObject.Radius, valueOfIntersection));
                         gameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(gameObject, nextGameObjectPreviousArea - nextGameObject.Area));
@@ -85,12 +86,13 @@ namespace Osmos
                         double nextGameObjectPreviousVector = nextGameObject.Vector;
 
                         double nextGameObjectNewVectorX =
-                            (gameObject.VectorX * gameObject.Area + nextGameObject.VectorX * nextGameObject.Area) / nextGameObject.Area;
+                            (gameObject.VectorX * gameObject.Area + nextGameObject.VectorX * nextGameObject.Area) / (gameObject.Area + nextGameObject.Area);
 
                         double nextGameObjectNewVectorY =
-                            (gameObject.VectorY * gameObject.Area + nextGameObject.VectorY * nextGameObject.Area) / nextGameObject.Area;
+                            (gameObject.VectorY * gameObject.Area + nextGameObject.VectorY * nextGameObject.Area) / (gameObject.Area + nextGameObject.Area);
 
                         nextGameObject.SetNewVector(nextGameObjectNewVectorX, nextGameObjectNewVectorY);
+                        gameObject.SetNewVector(nextGameObjectNewVectorX, nextGameObjectNewVectorY);
 
                         gameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(nextGameObject.Radius, gameObject.Radius, valueOfIntersection));
                         nextGameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(nextGameObject, gameObjectPreviousArea - gameObject.Area));
