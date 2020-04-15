@@ -25,7 +25,7 @@ namespace Osmos
             this.gameFieldHeight = gameFieldHeight;
 
             gameObjects = new List<GameObject> {new PlayerCircle(gameFieldWidth, gameFieldHeight)};
-            GenerateCircles();
+           // GenerateCircles();
         }
 
         private void GenerateCircles()
@@ -94,11 +94,11 @@ namespace Osmos
             gameObjects.RemoveAll(gameObject =>
                 gameObject.ObjectType != ObjectType.PlayerCircle && gameObject.Radius < 1);
 
-            if (PlayerCircle.Radius <= 0)
-                Defeat();
+            //if (PlayerCircle.Radius <= 0)
+            //    Defeat();
 
-            if (PlayerCircle.Area >= gameObjects.Sum(gameObject => gameObject.Area) / 2)
-                Victory();
+            //if (PlayerCircle.Area >= gameObjects.Sum(gameObject => gameObject.Area) / 2)
+            //    Victory();
 
         }
 
@@ -115,7 +115,8 @@ namespace Osmos
 
             EnemyCircle newEnemyCircle = new EnemyCircle(gameFieldHeight, gameFieldWidth, newCirclesRadius);
             newEnemyCircle.SetNewPosition(newCirclesPosition.X, newCirclesPosition.Y);
-            newEnemyCircle.SetNewVector(10, 10);
+            newEnemyCircle.SetNewVector(Math.Sign(cursorPositionX - PlayerCircle.PositionX) * 10,
+                -Math.Sign(cursorPositionY - PlayerCircle.PositionY) * 10);
 
             PlayerCircle.SetNewRadius(Math.Sqrt(PlayerCircle.Radius * PlayerCircle.Radius - newCirclesRadius * newCirclesRadius));
 

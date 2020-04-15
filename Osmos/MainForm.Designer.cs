@@ -46,6 +46,7 @@
             this.gameField.TabIndex = 0;
             this.gameField.TabStop = false;
             this.gameField.Paint += new System.Windows.Forms.PaintEventHandler(this.Draw);
+            this.gameField.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ClickMouse);
             // 
             // Timer
             // 
