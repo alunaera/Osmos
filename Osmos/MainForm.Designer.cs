@@ -62,6 +62,7 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Osmos";
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ClickMouse);
             ((System.ComponentModel.ISupportInitialize)(this.gameField)).EndInit();
             this.ResumeLayout(false);
 

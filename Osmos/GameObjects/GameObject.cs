@@ -5,16 +5,17 @@ namespace Osmos
 {
     internal abstract class GameObject
     {
+        protected int GameFieldWidth;
+        protected int GameFieldHeight;
+        public double PositionX { get; set; }
+        public double PositionY { get; set; }
+
         public ObjectType ObjectType { get; protected set; }
-        public double PositionX { get; protected set; }
-        public double PositionY { get; protected set; }
         public double VectorX { get; protected set; }
         public double VectorY { get; protected set; }
         public double Radius { get; protected set; }
-
         public double Area => Radius * Radius * Math.PI;
-        public double Vector => Math.Sqrt(VectorX * VectorX + VectorY * VectorY);
-        public double Impulse => Area * Vector;
+        public double Impulse => Area * Math.Sqrt(VectorX * VectorX + VectorY * VectorY);
 
         public abstract void Update();
 
@@ -24,7 +25,7 @@ namespace Osmos
             PositionY = positionY;
         }
 
-        public void ProcessingRepulsion(int gameFieldWidth, int gameFieldHeight)
+        public void ProcessingRepulsion()
         {
             if (PositionX - Radius < 0)
             {
@@ -38,15 +39,15 @@ namespace Osmos
                 SetOppositeVector(VectorDirection.Y);
             }
 
-            if (PositionX + Radius >= gameFieldWidth)
+            if (PositionX + Radius >= GameFieldWidth)
             {
-                SetNewPosition(gameFieldWidth - (int)Radius, PositionY);
+                SetNewPosition(GameFieldWidth - (int)Radius, PositionY);
                 SetOppositeVector(VectorDirection.X);
             }
 
-            if (PositionY + Radius >= gameFieldHeight)
+            if (PositionY + Radius >= GameFieldHeight)
             {
-                SetNewPosition(PositionX, gameFieldHeight - (int)Radius);
+                SetNewPosition(PositionX, GameFieldHeight - (int)Radius);
                 SetOppositeVector(VectorDirection.Y);
             }
         }
@@ -60,12 +61,6 @@ namespace Osmos
         {
             VectorX = vectorX;
             VectorY = vectorY;
-        }
-
-        public void ChangeVector(double reductionPercentage)
-        {
-            VectorX *= reductionPercentage;
-            VectorY *= reductionPercentage;
         }
 
         private void SetOppositeVector(VectorDirection vectorDirection)

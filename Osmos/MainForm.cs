@@ -43,5 +43,10 @@ namespace Osmos
             game.Update();
             gameField.Refresh();
         }
+
+        private void ClickMouse(object sender, MouseEventArgs e)
+        {
+            game.MakeShot(e.X, e.Y);
+        }
     }
 }
