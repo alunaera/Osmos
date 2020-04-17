@@ -13,6 +13,7 @@ namespace Osmos
 
         private int gameFieldWidth;
         private int gameFieldHeight;
+        private Point newCirclesPosition;
         private PlayerCircle PlayerCircle => (PlayerCircle) gameObjects[0];
         private List<GameObject> gameObjects;
 
@@ -25,7 +26,7 @@ namespace Osmos
             this.gameFieldHeight = gameFieldHeight;
 
             gameObjects = new List<GameObject> {new PlayerCircle(gameFieldWidth, gameFieldHeight)};
-           // GenerateCircles();
+            GenerateCircles();
         }
 
         private void GenerateCircles()
@@ -94,11 +95,11 @@ namespace Osmos
             gameObjects.RemoveAll(gameObject =>
                 gameObject.ObjectType != ObjectType.PlayerCircle && gameObject.Radius < 1);
 
-            //if (PlayerCircle.Radius <= 0)
-            //    Defeat();
+            if (PlayerCircle.Radius <= 0)
+                Defeat();
 
-            //if (PlayerCircle.Area >= gameObjects.Sum(gameObject => gameObject.Area) / 2)
-            //    Victory();
+            if (PlayerCircle.Area >= gameObjects.Sum(gameObject => gameObject.Area) / 2)
+                Victory();
 
         }
 
@@ -110,22 +111,22 @@ namespace Osmos
 
             double newCirclesRadius = PlayerCircle.Radius / Math.Sqrt(10);
 
-            Point newCirclesPosition = new Point((int)((PlayerCircle.Radius + newCirclesRadius) * Math.Cos(offsetAngle) + PlayerCircle.PositionX),
+             newCirclesPosition = new Point((int)((PlayerCircle.Radius + newCirclesRadius) * Math.Cos(offsetAngle) + PlayerCircle.PositionX),
                 (int)((PlayerCircle.Radius + newCirclesRadius) * Math.Sin(offsetAngle) + PlayerCircle.PositionY));
 
-            EnemyCircle newEnemyCircle = new EnemyCircle(gameFieldHeight, gameFieldWidth, newCirclesRadius);
+            EnemyCircle newEnemyCircle = new EnemyCircle(gameFieldWidth, gameFieldHeight, newCirclesRadius);
             newEnemyCircle.SetNewPosition(newCirclesPosition.X, newCirclesPosition.Y);
             newEnemyCircle.SetNewVector(Math.Sign(cursorPositionX - PlayerCircle.PositionX) * 10,
-                -Math.Sign(cursorPositionY - PlayerCircle.PositionY) * 10);
+                Math.Sign(cursorPositionY - PlayerCircle.PositionY) * 10);
 
             PlayerCircle.SetNewRadius(Math.Sqrt(PlayerCircle.Radius * PlayerCircle.Radius - newCirclesRadius * newCirclesRadius));
 
             double playerCircleNewVectorX =
-                ((PlayerCircle.Area - newEnemyCircle.Radius) * PlayerCircle.VectorX +
+                -((PlayerCircle.Area - newEnemyCircle.Radius) * PlayerCircle.VectorX +
                  2 * newEnemyCircle.Area * newEnemyCircle.VectorX) / (PlayerCircle.Area + newEnemyCircle.Area);
 
             double playerCircleNewVectorY =
-                ((PlayerCircle.Area - newEnemyCircle.Area) * PlayerCircle.VectorY +
+                -((PlayerCircle.Area - newEnemyCircle.Area) * PlayerCircle.VectorY +
                  2 * newEnemyCircle.Area * newEnemyCircle.VectorY) / (PlayerCircle.Area + newEnemyCircle.Area);
 
             PlayerCircle.SetNewVector(playerCircleNewVectorX, playerCircleNewVectorY);
@@ -165,6 +166,7 @@ namespace Osmos
 
         private void DrawInterface(Graphics graphics)
         {
+            graphics.DrawEllipse(Pens.Blue, newCirclesPosition.X, newCirclesPosition.Y, 10, 10);
             graphics.DrawString("Summary area: " + (int)gameObjects.Sum(gameObject => gameObject.Area), font, Brushes.Black, gameFieldWidth - 250, 10);
             graphics.DrawString("Summary impulse: " + (int)gameObjects.Sum(gameObject => gameObject.Impulse), font, Brushes.Black, gameFieldWidth - 250, 30);
         }

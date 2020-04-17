@@ -11,11 +11,10 @@ namespace Osmos
             GameFieldHeight = gameFieldHeight;
             PositionX = Game.Random.Next(0, gameFieldWidth);
             PositionY = Game.Random.Next(0, gameFieldHeight);
-
             ObjectType = ObjectType.PlayerCircle;
             Radius = Game.Random.Next(60, 80);
-            VectorX = Game.Random.Next(-15, 15);
-            VectorY = Game.Random.Next(-15, 15);
+           // VectorX = Game.Random.Next(-15, 15);
+           // VectorY = Game.Random.Next(-15, 15);
         }
 
         public override void Update()
