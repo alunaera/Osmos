@@ -49,9 +49,10 @@ namespace Osmos
             {
                 foreach (GameObject nextGameObject in gameObjects)
                 {
-                    double valueOfIntersection = gameObject.Radius + nextGameObject.Radius - gameObject.GetDistanceToObject(nextGameObject);
+                    double valueOfIntersection = gameObject.Radius + nextGameObject.Radius -
+                                                 gameObject.GetDistanceToObject(nextGameObject);
 
-                    if (!(valueOfIntersection >= 0)) 
+                    if (!(valueOfIntersection >= 0))
                         continue;
 
                     if (gameObject.Radius > nextGameObject.Radius)
@@ -60,17 +61,21 @@ namespace Osmos
 
                         double gameObjectNewVectorX =
                             ((gameObject.Area - nextGameObject.Area) * gameObject.VectorX +
-                             2 * nextGameObject.Area * nextGameObject.VectorX) / (gameObject.Area + nextGameObject.Area);
+                             2 * nextGameObject.Area * nextGameObject.VectorX) /
+                            (gameObject.Area + nextGameObject.Area);
 
                         double gameObjectNewVectorY =
                             ((gameObject.Area - nextGameObject.Area) * gameObject.VectorY +
-                             2 * nextGameObject.Area * nextGameObject.VectorY) / (gameObject.Area + nextGameObject.Area);
+                             2 * nextGameObject.Area * nextGameObject.VectorY) /
+                            (gameObject.Area + nextGameObject.Area);
 
                         gameObject.SetNewVector(gameObjectNewVectorX, gameObjectNewVectorY);
 
                         nextGameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(gameObject.Radius,
                             nextGameObject.Radius, valueOfIntersection == 0 ? 1 : valueOfIntersection));
-                        gameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(gameObject, nextGameObjectPreviousArea - nextGameObject.Area)); ;
+                        gameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(gameObject,
+                            nextGameObjectPreviousArea - nextGameObject.Area));
+                        ;
                     }
                     else
                     {
@@ -78,18 +83,20 @@ namespace Osmos
 
                         double nextGameObjectVectorX =
                             (2 * gameObject.Area * gameObject.VectorX +
-                             nextGameObject.VectorX * (nextGameObject.Area - gameObject.Area)) /
-                            (gameObject.Area + nextGameObject.Area);
+                             nextGameObject.VectorX * (nextGameObject.Area - gameObject.Area))
+                            / (gameObject.Area + nextGameObject.Area);
 
                         double nextGameObjectVectorY =
                             (2 * gameObject.Area * gameObject.VectorY +
-                             nextGameObject.VectorY * (nextGameObject.Area - gameObject.Area)) /
-                            (gameObject.Area + nextGameObject.Area);
+                             nextGameObject.VectorY * (nextGameObject.Area - gameObject.Area))
+                            / (gameObject.Area + nextGameObject.Area);
 
                         nextGameObject.SetNewVector(nextGameObjectVectorX, nextGameObjectVectorY);
 
-                        gameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(nextGameObject.Radius, gameObject.Radius, valueOfIntersection == 0 ? 1 : valueOfIntersection));
-                        nextGameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(nextGameObject, gameObjectPreviousArea - gameObject.Area));
+                        gameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(nextGameObject.Radius,
+                            gameObject.Radius, valueOfIntersection == 0 ? 1 : valueOfIntersection));
+                        nextGameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(nextGameObject,
+                            gameObjectPreviousArea - gameObject.Area));
                     }
                 }
             }
@@ -122,9 +129,9 @@ namespace Osmos
 
             PlayerCircle.SetNewRadius(Math.Sqrt(PlayerCircle.Radius * PlayerCircle.Radius - newCirclesRadius * newCirclesRadius));
 
-            double playerCircleNewVectorX = -newEnemyCircle.Impulse / PlayerCircle.Area;
+            double playerCircleNewVectorX = -newEnemyCircle.VectorX * newEnemyCircle.Area / PlayerCircle.Area;
 
-            double playerCircleNewVectorY = -newEnemyCircle.Impulse / PlayerCircle.Area;
+            double playerCircleNewVectorY = -newEnemyCircle.VectorY * newEnemyCircle.Area / PlayerCircle.Area;
 
             PlayerCircle.SetNewVector(playerCircleNewVectorX, playerCircleNewVectorY);
 
