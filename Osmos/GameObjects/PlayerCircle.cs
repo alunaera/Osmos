@@ -9,8 +9,10 @@ namespace Osmos
         {
             GameFieldWidth = gameFieldWidth;
             GameFieldHeight = gameFieldHeight;
-            PositionX = Game.Random.Next(0, gameFieldWidth);
-            PositionY = Game.Random.Next(0, gameFieldHeight);
+            //PositionX = Game.Random.Next(0, gameFieldWidth);
+            //PositionY = Game.Random.Next(0, gameFieldHeight);
+            PositionX = gameFieldWidth / 2;
+            PositionY = gameFieldHeight / 2;
             ObjectType = ObjectType.PlayerCircle;
             Radius = Game.Random.Next(60, 80);
            // VectorX = Game.Random.Next(-15, 15);

@@ -51,42 +51,44 @@ namespace Osmos
                 {
                     double valueOfIntersection = gameObject.Radius + nextGameObject.Radius - gameObject.GetDistanceToObject(nextGameObject);
 
-                    if (!(valueOfIntersection > 0))
+                    if (!(valueOfIntersection >= 0)) 
                         continue;
-
-                    double gameObjectNewVectorX =
-                        ((gameObject.Area - nextGameObject.Area) * gameObject.VectorX +
-                         2 * nextGameObject.Area * nextGameObject.VectorX) / (gameObject.Area + nextGameObject.Area);
-
-                    double gameObjectNewVectorY =
-                        ((gameObject.Area - nextGameObject.Area) * gameObject.VectorY +
-                         2 * nextGameObject.Area * nextGameObject.VectorY) / (gameObject.Area + nextGameObject.Area);
-
-                    double nextGameObjectVectorX =
-                        (2 * gameObject.Area * gameObject.VectorX +
-                         nextGameObject.VectorX * (nextGameObject.Area - gameObject.Area)) /
-                        (gameObject.Area + nextGameObject.Area);
-
-                    double nextGameObjectVectorY =
-                        (2 * gameObject.Area * gameObject.VectorY +
-                         nextGameObject.VectorY * (nextGameObject.Area - gameObject.Area)) /
-                        (gameObject.Area + nextGameObject.Area);
-
-                    gameObject.SetNewVector(gameObjectNewVectorX, gameObjectNewVectorY);
-                    nextGameObject.SetNewVector(nextGameObjectVectorX, nextGameObjectVectorY);
 
                     if (gameObject.Radius > nextGameObject.Radius)
                     {
                         double nextGameObjectPreviousArea = nextGameObject.Area;
 
-                        nextGameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(gameObject.Radius, nextGameObject.Radius, valueOfIntersection));
+                        double gameObjectNewVectorX =
+                            ((gameObject.Area - nextGameObject.Area) * gameObject.VectorX +
+                             2 * nextGameObject.Area * nextGameObject.VectorX) / (gameObject.Area + nextGameObject.Area);
+
+                        double gameObjectNewVectorY =
+                            ((gameObject.Area - nextGameObject.Area) * gameObject.VectorY +
+                             2 * nextGameObject.Area * nextGameObject.VectorY) / (gameObject.Area + nextGameObject.Area);
+
+                        gameObject.SetNewVector(gameObjectNewVectorX, gameObjectNewVectorY);
+
+                        nextGameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(gameObject.Radius,
+                            nextGameObject.Radius, valueOfIntersection == 0 ? 1 : valueOfIntersection));
                         gameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(gameObject, nextGameObjectPreviousArea - nextGameObject.Area)); ;
                     }
                     else
                     {
                         double gameObjectPreviousArea = gameObject.Area;
 
-                        gameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(nextGameObject.Radius, gameObject.Radius, valueOfIntersection));
+                        double nextGameObjectVectorX =
+                            (2 * gameObject.Area * gameObject.VectorX +
+                             nextGameObject.VectorX * (nextGameObject.Area - gameObject.Area)) /
+                            (gameObject.Area + nextGameObject.Area);
+
+                        double nextGameObjectVectorY =
+                            (2 * gameObject.Area * gameObject.VectorY +
+                             nextGameObject.VectorY * (nextGameObject.Area - gameObject.Area)) /
+                            (gameObject.Area + nextGameObject.Area);
+
+                        nextGameObject.SetNewVector(nextGameObjectVectorX, nextGameObjectVectorY);
+
+                        gameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(nextGameObject.Radius, gameObject.Radius, valueOfIntersection == 0 ? 1 : valueOfIntersection));
                         nextGameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(nextGameObject, gameObjectPreviousArea - gameObject.Area));
                     }
                 }
@@ -111,23 +113,18 @@ namespace Osmos
 
             double newCirclesRadius = PlayerCircle.Radius / Math.Sqrt(10);
 
-             newCirclesPosition = new Point((int)((PlayerCircle.Radius + newCirclesRadius) * Math.Cos(offsetAngle) + PlayerCircle.PositionX),
-                (int)((PlayerCircle.Radius + newCirclesRadius) * Math.Sin(offsetAngle) + PlayerCircle.PositionY));
+             newCirclesPosition = new Point((int)((PlayerCircle.Radius + newCirclesRadius + 3) * Math.Cos(offsetAngle) + PlayerCircle.PositionX),
+                (int)((PlayerCircle.Radius + newCirclesRadius + 3) * Math.Sin(offsetAngle) + PlayerCircle.PositionY));
 
             EnemyCircle newEnemyCircle = new EnemyCircle(gameFieldWidth, gameFieldHeight, newCirclesRadius);
             newEnemyCircle.SetNewPosition(newCirclesPosition.X, newCirclesPosition.Y);
-            newEnemyCircle.SetNewVector(Math.Sign(cursorPositionX - PlayerCircle.PositionX) * 10,
-                Math.Sign(cursorPositionY - PlayerCircle.PositionY) * 10);
+            newEnemyCircle.SetNewVector(Math.Cos(offsetAngle) * 20, Math.Sin(offsetAngle) * 20);
 
             PlayerCircle.SetNewRadius(Math.Sqrt(PlayerCircle.Radius * PlayerCircle.Radius - newCirclesRadius * newCirclesRadius));
 
-            double playerCircleNewVectorX =
-                -((PlayerCircle.Area - newEnemyCircle.Radius) * PlayerCircle.VectorX +
-                 2 * newEnemyCircle.Area * newEnemyCircle.VectorX) / (PlayerCircle.Area + newEnemyCircle.Area);
+            double playerCircleNewVectorX = -newEnemyCircle.Impulse / PlayerCircle.Area;
 
-            double playerCircleNewVectorY =
-                -((PlayerCircle.Area - newEnemyCircle.Area) * PlayerCircle.VectorY +
-                 2 * newEnemyCircle.Area * newEnemyCircle.VectorY) / (PlayerCircle.Area + newEnemyCircle.Area);
+            double playerCircleNewVectorY = -newEnemyCircle.Impulse / PlayerCircle.Area;
 
             PlayerCircle.SetNewVector(playerCircleNewVectorX, playerCircleNewVectorY);
 
