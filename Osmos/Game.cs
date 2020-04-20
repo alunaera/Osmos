@@ -72,9 +72,9 @@ namespace Osmos
 
                         gameObject.SetNewVector(gameObjectNewVectorX, gameObjectNewVectorY);
 
-                        nextGameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(gameObject.Radius,
+                        nextGameObject.SetNewRadius(GetNewRadiusSmallerCircle(gameObject.Radius,
                             nextGameObject.Radius, valueOfIntersection == 0 ? 1 : valueOfIntersection));
-                        gameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(gameObject,
+                        gameObject.SetNewRadius(GetNewRadiusLargerCircle(gameObject,
                             previousArea - summaryArea));
                     }
                     else
@@ -91,9 +91,9 @@ namespace Osmos
 
                         nextGameObject.SetNewVector(nextGameObjectVectorX, nextGameObjectVectorY);
 
-                        gameObject.ChangeRadius(GetValueOfDecreaseSmallerCircle(nextGameObject.Radius,
+                        gameObject.SetNewRadius(GetNewRadiusSmallerCircle(nextGameObject.Radius,
                             gameObject.Radius, valueOfIntersection == 0 ? 1 : valueOfIntersection));
-                        nextGameObject.ChangeRadius(GetValueOfIncreaseLargerCircle(nextGameObject,
+                        nextGameObject.SetNewRadius(GetNewRadiusLargerCircle(nextGameObject,
                             previousArea - summaryArea));
                     }
                 }
@@ -112,45 +112,21 @@ namespace Osmos
 
         public void MakeShot(int cursorPositionX, int cursorPositionY)
         {
-            double offsetAngle = PlayerCircle.PositionX - cursorPositionX >= 0
-                ? Math.Atan((PlayerCircle.PositionY - cursorPositionY) / (PlayerCircle.PositionX - cursorPositionX)) -
-                  Math.PI
-                : Math.Atan((PlayerCircle.PositionY - cursorPositionY) / (PlayerCircle.PositionX - cursorPositionX));
-
-            double newCirclesRadius = PlayerCircle.Radius / Math.Sqrt(10);
-
-            newCirclesPosition = new Point(
-                (int) ((PlayerCircle.Radius + newCirclesRadius + 3) * Math.Cos(offsetAngle) + PlayerCircle.PositionX),
-                (int) ((PlayerCircle.Radius + newCirclesRadius + 3) * Math.Sin(offsetAngle) + PlayerCircle.PositionY));
-
-            EnemyCircle newEnemyCircle = new EnemyCircle(gameFieldWidth, gameFieldHeight, newCirclesRadius);
-            newEnemyCircle.SetNewPosition(newCirclesPosition.X, newCirclesPosition.Y);
-            newEnemyCircle.SetNewVector(Math.Cos(offsetAngle) * 20, Math.Sin(offsetAngle) * 20);
-
-            PlayerCircle.SetNewRadius(Math.Sqrt(PlayerCircle.Radius * PlayerCircle.Radius -
-                                                newCirclesRadius * newCirclesRadius));
-
-            double playerCircleNewVectorX = -2 * newEnemyCircle.VectorX * newEnemyCircle.Area / PlayerCircle.Area;
-
-            double playerCircleNewVectorY = -2 * newEnemyCircle.VectorY * newEnemyCircle.Area / PlayerCircle.Area;
-
-            PlayerCircle.SetNewVector(playerCircleNewVectorX, playerCircleNewVectorY);
-
-            gameObjects.Add(newEnemyCircle);
+            gameObjects.Add(PlayerCircle.GetNewEnemyCircle(cursorPositionX, cursorPositionY));
         }
 
-        private static double GetValueOfIncreaseLargerCircle(GameObject gameObject, double absorbedArea)
+        private static double GetNewRadiusLargerCircle(GameObject gameObject, double absorbedArea)
         {
-            return Math.Sqrt((gameObject.Area + absorbedArea) / Math.PI) - gameObject.Radius;
+            return Math.Sqrt((gameObject.Area + absorbedArea) / Math.PI);
         }
 
-        private static double GetValueOfDecreaseSmallerCircle(double largerRadius, double smallerRadius, double valueOfIntersection)
+        private static double GetNewRadiusSmallerCircle(double largerRadius, double smallerRadius, double valueOfIntersection)
         {
             double b = largerRadius - smallerRadius + valueOfIntersection;
             double c = valueOfIntersection * (valueOfIntersection - 2 * smallerRadius) / 2;
             double sqrtOfDiscriminant = Math.Sqrt(b * b - 4 * c);
 
-            return -valueOfIntersection - (sqrtOfDiscriminant - b) / 2;
+            return smallerRadius - valueOfIntersection - (sqrtOfDiscriminant - b) / 2;
         }
 
         public void Draw(Graphics graphics)

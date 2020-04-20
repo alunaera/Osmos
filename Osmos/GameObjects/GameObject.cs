@@ -7,8 +7,8 @@ namespace Osmos
     {
         protected int GameFieldWidth;
         protected int GameFieldHeight;
-        public double PositionX { get; set; }
-        public double PositionY { get; set; }
+        protected double PositionX { get; set; }
+        protected double PositionY { get; set; }
 
         public ObjectType ObjectType { get; protected set; }
         public double VectorX { get; protected set; }
@@ -23,6 +23,17 @@ namespace Osmos
         {
             PositionX = positionX;
             PositionY = positionY;
+        }
+
+        public void SetNewRadius(double radius)
+        {
+            Radius = radius;
+        }
+
+        public void SetNewVector(double vectorX, double vectorY)
+        {
+            VectorX = vectorX;
+            VectorY = vectorY;
         }
 
         public void ProcessingRepulsion()
@@ -50,17 +61,6 @@ namespace Osmos
                 SetNewPosition(PositionX, GameFieldHeight - (int)Radius);
                 SetOppositeVector(VectorDirection.Y);
             }
-        }
-
-        public void ChangeRadius(double valueOfChange)
-        {
-            Radius += valueOfChange;
-        }
-
-        public void SetNewVector(double vectorX, double vectorY)
-        {
-            VectorX = vectorX;
-            VectorY = vectorY;
         }
 
         private void SetOppositeVector(VectorDirection vectorDirection)

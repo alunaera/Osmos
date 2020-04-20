@@ -9,56 +9,48 @@ namespace Osmos
         {
             GameFieldWidth = gameFieldWidth;
             GameFieldHeight = gameFieldHeight;
-            //PositionX = Game.Random.Next(0, gameFieldWidth);
-            //PositionY = Game.Random.Next(0, gameFieldHeight);
-            PositionX = gameFieldWidth / 2;
-            PositionY = gameFieldHeight / 2;
+            SetNewPosition(gameFieldWidth / 2, gameFieldHeight / 2);
             ObjectType = ObjectType.PlayerCircle;
             Radius = Game.Random.Next(60, 80);
-           // VectorX = Game.Random.Next(-15, 15);
-           // VectorY = Game.Random.Next(-15, 15);
         }
 
         public override void Update()
         {
-            PositionX += (int)VectorX;
-            PositionY += (int)VectorY;
+            PositionX += VectorX;
+            PositionY += VectorY;
         }
 
         public EnemyCircle GetNewEnemyCircle(int cursorPositionX, int cursorPositionY)
         {
             double offsetAngle = PositionX - cursorPositionX >= 0
-                ? Math.Atan((PositionY - cursorPositionY) / (PositionX - cursorPositionX)) - Math.PI
+                ? Math.Atan((PositionY - cursorPositionY) / (PositionX - cursorPositionX)) -
+                  Math.PI
                 : Math.Atan((PositionY - cursorPositionY) / (PositionX - cursorPositionX));
 
             double newCirclesRadius = Radius / Math.Sqrt(10);
 
-            Point newCirclesPosition = new Point((int)((Radius + newCirclesRadius) * Math.Cos(offsetAngle) + PositionX),
-                (int)((Radius + newCirclesRadius) * Math.Sin(offsetAngle) + PositionY));
+            Point newCirclesPosition = new Point(
+                (int) ((Radius + newCirclesRadius + 3) * Math.Cos(offsetAngle) + PositionX),
+                (int) ((Radius + newCirclesRadius + 3) * Math.Sin(offsetAngle) + PositionY));
 
-            EnemyCircle newEnemyCircle = new EnemyCircle(GameFieldHeight, GameFieldWidth, newCirclesRadius);
+            EnemyCircle newEnemyCircle = new EnemyCircle(GameFieldWidth, GameFieldHeight, newCirclesRadius);
             newEnemyCircle.SetNewPosition(newCirclesPosition.X, newCirclesPosition.Y);
-            newEnemyCircle.SetNewVector(10, 10);
+            newEnemyCircle.SetNewVector(Math.Cos(offsetAngle) * 20, Math.Sin(offsetAngle) * 20);
 
-            double gameObjectNewVectorX =
-                ((Area - newEnemyCircle.Radius) * VectorX +
-                 2 * newEnemyCircle.Area * newEnemyCircle.VectorX) / (Area + newEnemyCircle.Area);
+            SetNewRadius(Math.Sqrt(Radius * Radius - newCirclesRadius * newCirclesRadius));
 
-            double gameObjectNewVectorY =
-                ((Area - newEnemyCircle.Area) * VectorY +
-                 2 * newEnemyCircle.Area * newEnemyCircle.VectorY) / (Area + newEnemyCircle.Area);
+            double playerCircleNewVectorX = -newEnemyCircle.VectorX * newEnemyCircle.Area / Area * 3;
+            double playerCircleNewVectorY = -newEnemyCircle.VectorY * newEnemyCircle.Area / Area * 3;
+
+            SetNewVector(playerCircleNewVectorX, playerCircleNewVectorY);
 
             return newEnemyCircle;
         }
 
-        public void SetNewRadius(double radius)
-        {
-            Radius = radius;
-        }
-
         public void Draw(Graphics graphics)
         {
-            graphics.FillEllipse(Brushes.Green, (int)(PositionX - Radius), (int)(PositionY - Radius), (int)Radius * 2, (int)Radius * 2);
+            graphics.FillEllipse(Brushes.Green, (int) (PositionX - Radius), (int) (PositionY - Radius),
+                                             (int) Radius * 2, (int) Radius * 2);
         }
     }
 }
