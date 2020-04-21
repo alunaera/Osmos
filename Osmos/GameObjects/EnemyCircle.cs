@@ -22,11 +22,5 @@
             GameFieldHeight = gameFieldHeight;
             Radius = radius;
         }
-
-        public override void Update()
-        {
-            PositionX += (int)VectorX;
-            PositionY += (int)VectorY;
-        }
     }
 }

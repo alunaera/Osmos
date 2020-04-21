@@ -13,10 +13,10 @@ namespace Osmos
 
         private int gameFieldWidth;
         private int gameFieldHeight;
-        private double summaryArea => gameObjects.Sum(gameObject => gameObject.Area);
-        private Point newCirclesPosition;
-        private PlayerCircle PlayerCircle => (PlayerCircle) gameObjects[0];
+        private GameMode gameMode;
         private List<GameObject> gameObjects;
+        private double SummaryArea => gameObjects.Sum(gameObject => gameObject.Area);
+        private PlayerCircle PlayerCircle => (PlayerCircle) gameObjects[0];
 
         public event Action Defeat = delegate { };
         public event Action Victory = delegate { };
@@ -32,7 +32,7 @@ namespace Osmos
 
         private void GenerateCircles()
         {
-            int circlesCount = Random.Next(400, 1000);
+            int circlesCount = Random.Next(300, 400);
 
             for (int i = 0; i < circlesCount; i++)
                 gameObjects.Add(new EnemyCircle(gameFieldWidth, gameFieldHeight));
@@ -42,8 +42,7 @@ namespace Osmos
         {
             foreach (GameObject gameObject in gameObjects)
             {
-                gameObject.Update();
-                gameObject.ProcessingRepulsion();
+                gameObject.Update(gameMode);
             }
 
             foreach (GameObject gameObject in gameObjects)
@@ -53,10 +52,10 @@ namespace Osmos
                     double valueOfIntersection = gameObject.Radius + nextGameObject.Radius -
                                                  gameObject.GetDistanceToObject(nextGameObject);
 
-                    if (!(valueOfIntersection >= 0))
+                    if (!(valueOfIntersection > 0))
                         continue;
 
-                    double previousArea = summaryArea;
+                    double previousArea = SummaryArea;
 
                     if (gameObject.Radius > nextGameObject.Radius)
                     {
@@ -75,7 +74,7 @@ namespace Osmos
                         nextGameObject.SetNewRadius(GetNewRadiusSmallerCircle(gameObject.Radius,
                             nextGameObject.Radius, valueOfIntersection == 0 ? 1 : valueOfIntersection));
                         gameObject.SetNewRadius(GetNewRadiusLargerCircle(gameObject,
-                            previousArea - summaryArea));
+                            previousArea - SummaryArea));
                     }
                     else
                     {
@@ -94,18 +93,17 @@ namespace Osmos
                         gameObject.SetNewRadius(GetNewRadiusSmallerCircle(nextGameObject.Radius,
                             gameObject.Radius, valueOfIntersection == 0 ? 1 : valueOfIntersection));
                         nextGameObject.SetNewRadius(GetNewRadiusLargerCircle(nextGameObject,
-                            previousArea - summaryArea));
+                            previousArea - SummaryArea));
                     }
                 }
             }
 
-            gameObjects.RemoveAll(gameObject =>
-                gameObject.ObjectType != ObjectType.PlayerCircle && gameObject.Radius < 1);
+            gameObjects.RemoveAll(gameObject => gameObject.ObjectType != ObjectType.PlayerCircle && gameObject.Radius < 1);
 
             if (PlayerCircle.Radius <= 0)
                 Defeat();
 
-            if (PlayerCircle.Area >= gameObjects.Sum(gameObject => gameObject.Area) / 2)
+            if (PlayerCircle.Area > SummaryArea / 2)
                 Victory();
 
         }
@@ -129,6 +127,12 @@ namespace Osmos
             return smallerRadius - valueOfIntersection - (sqrtOfDiscriminant - b) / 2;
         }
 
+        public void ChangeGameMode(GameMode gameMode)
+        {
+            this.gameMode = gameMode;
+            StartGame(gameFieldWidth, gameFieldHeight);
+        }
+
         public void Draw(Graphics graphics)
         {
             foreach (GameObject gameObject in gameObjects)
@@ -147,8 +151,7 @@ namespace Osmos
 
         private void DrawInterface(Graphics graphics)
         {
-            graphics.DrawEllipse(Pens.Blue, newCirclesPosition.X, newCirclesPosition.Y, 10, 10);
-            graphics.DrawString("Summary area: " + (int)summaryArea, font, Brushes.Black, gameFieldWidth - 250, 10);
+            graphics.DrawString("Summary area: " + (int)SummaryArea, font, Brushes.Black, gameFieldWidth - 250, 10);
             graphics.DrawString("Summary impulse: " + (int)gameObjects.Sum(gameObject => gameObject.Impulse), font, Brushes.Black, gameFieldWidth - 250, 30);
         }
     }

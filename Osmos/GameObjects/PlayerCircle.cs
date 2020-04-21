@@ -14,24 +14,17 @@ namespace Osmos
             Radius = Game.Random.Next(60, 80);
         }
 
-        public override void Update()
-        {
-            PositionX += VectorX;
-            PositionY += VectorY;
-        }
-
         public EnemyCircle GetNewEnemyCircle(int cursorPositionX, int cursorPositionY)
         {
             double offsetAngle = PositionX - cursorPositionX >= 0
-                ? Math.Atan((PositionY - cursorPositionY) / (PositionX - cursorPositionX)) -
-                  Math.PI
+                ? Math.Atan((PositionY - cursorPositionY) / (PositionX - cursorPositionX)) - Math.PI
                 : Math.Atan((PositionY - cursorPositionY) / (PositionX - cursorPositionX));
 
-            double newCirclesRadius = Radius / Math.Sqrt(10);
+            double newCirclesRadius = Radius / Math.Sqrt(20);
 
             Point newCirclesPosition = new Point(
-                (int) ((Radius + newCirclesRadius + 3) * Math.Cos(offsetAngle) + PositionX),
-                (int) ((Radius + newCirclesRadius + 3) * Math.Sin(offsetAngle) + PositionY));
+                (int) ((Radius + newCirclesRadius) * Math.Cos(offsetAngle) + PositionX),
+                (int) ((Radius + newCirclesRadius) * Math.Sin(offsetAngle) + PositionY));
 
             EnemyCircle newEnemyCircle = new EnemyCircle(GameFieldWidth, GameFieldHeight, newCirclesRadius);
             newEnemyCircle.SetNewPosition(newCirclesPosition.X, newCirclesPosition.Y);

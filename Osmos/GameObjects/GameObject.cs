@@ -17,7 +17,13 @@ namespace Osmos
         public double Area => Radius * Radius * Math.PI;
         public double Impulse => Area * Math.Sqrt(VectorX * VectorX + VectorY * VectorY);
 
-        public abstract void Update();
+        public void Update(GameMode gameMode)
+        {
+            PositionX += VectorX;
+            PositionY += VectorY;
+
+            ProcessingMoving(gameMode);
+        }
 
         public void SetNewPosition(double positionX, double positionY)
         {
@@ -36,32 +42,54 @@ namespace Osmos
             VectorY = vectorY;
         }
 
-        public void ProcessingRepulsion()
+        private void ProcessingMoving(GameMode gameMode)
         {
-            if (PositionX - Radius < 0)
+            switch (gameMode)
             {
-                SetNewPosition((int)Radius, PositionY);
-                SetOppositeVector(VectorDirection.X);
-            }
+                case GameMode.Repulsion:
+                    if (PositionX - Radius < 0)
+                    {
+                        PositionX = Radius;
+                        SetOppositeVector(VectorDirection.X);
+                    }
 
-            if (PositionY - Radius < 0)
-            {
-                SetNewPosition(PositionX, (int)Radius);
-                SetOppositeVector(VectorDirection.Y);
-            }
+                    if (PositionY - Radius < 0)
+                    {
+                        PositionY = Radius;
+                        SetOppositeVector(VectorDirection.Y);
+                    }
 
-            if (PositionX + Radius >= GameFieldWidth)
-            {
-                SetNewPosition(GameFieldWidth - (int)Radius, PositionY);
-                SetOppositeVector(VectorDirection.X);
-            }
+                    if (PositionX + Radius >= GameFieldWidth)
+                    {
+                        PositionX = GameFieldWidth - Radius;
+                        SetOppositeVector(VectorDirection.X);
+                    }
 
-            if (PositionY + Radius >= GameFieldHeight)
-            {
-                SetNewPosition(PositionX, GameFieldHeight - (int)Radius);
-                SetOppositeVector(VectorDirection.Y);
+                    if (PositionY + Radius >= GameFieldHeight)
+                    {
+                        PositionY = GameFieldHeight - Radius;
+                        SetOppositeVector(VectorDirection.Y);
+                    }
+
+                    break;
+
+                case GameMode.Cycle:
+                    if (PositionX + Radius < 0)
+                        PositionX = GameFieldWidth + Radius;
+
+                    if (PositionY + Radius < 0)
+                        PositionY = GameFieldHeight + Radius;
+
+                    if (PositionX - Radius >= GameFieldWidth)
+                        PositionX = -Radius;
+
+                    if (PositionY - Radius >= GameFieldHeight)
+                        PositionY = -Radius;
+
+                    break;
             }
         }
+
 
         private void SetOppositeVector(VectorDirection vectorDirection)
         {

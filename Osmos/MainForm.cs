@@ -15,6 +15,7 @@ namespace Osmos
 
             game.Defeat += () =>
             {
+                gameField.Refresh();
                 Timer.Enabled = false;
                 MessageBox.Show("Game over");
                 game.StartGame(gameField.ClientRectangle.Width, gameField.ClientRectangle.Height);
@@ -23,6 +24,7 @@ namespace Osmos
 
             game.Victory += () =>
             {
+                gameField.Refresh();
                 Timer.Enabled = false;
                 MessageBox.Show("You win");
                 game.StartGame(gameField.ClientRectangle.Width, gameField.ClientRectangle.Height);
@@ -47,6 +49,16 @@ namespace Osmos
         private void ClickMouse(object sender, MouseEventArgs e)
         {
             game.MakeShot(e.X, e.Y);
+        }
+
+        private void ClickRepulsion(object sender, System.EventArgs e)
+        {
+            game.ChangeGameMode(GameMode.Repulsion);
+        }
+
+        private void ClickCycle(object sender, System.EventArgs e)
+        {
+            game.ChangeGameMode(GameMode.Cycle);
         }
     }
 }
