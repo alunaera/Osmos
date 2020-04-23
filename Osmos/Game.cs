@@ -13,7 +13,7 @@ namespace Osmos
 
         private int gameFieldWidth;
         private int gameFieldHeight;
-        private GameMode gameMode;
+        private GameMode gameMode = GameMode.Repulsion;
         private List<GameObject> gameObjects;
         private double SummaryArea => gameObjects.Sum(gameObject => gameObject.Area);
         private PlayerCircle PlayerCircle => (PlayerCircle) gameObjects[0];

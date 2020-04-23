@@ -80,11 +80,11 @@ namespace Osmos
                     if (PositionY + Radius < 0)
                         PositionY = GameFieldHeight + Radius;
 
-                    if (PositionX - Radius >= GameFieldWidth)
-                        PositionX = -Radius;
+                    if (PositionX - Radius > GameFieldWidth)
+                        PositionX =  0;
 
-                    if (PositionY - Radius >= GameFieldHeight)
-                        PositionY = -Radius;
+                    if (PositionY - Radius > GameFieldHeight)
+                        PositionY = 0;
 
                     break;
             }
