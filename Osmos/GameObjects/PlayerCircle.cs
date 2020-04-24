@@ -20,7 +20,7 @@ namespace Osmos
                 ? Math.Atan((PositionY - cursorPositionY) / (PositionX - cursorPositionX)) - Math.PI
                 : Math.Atan((PositionY - cursorPositionY) / (PositionX - cursorPositionX));
 
-            double newCirclesRadius = Radius / Math.Sqrt(20);
+            double newCirclesRadius = Radius / Math.Sqrt(25);
 
             Point newCirclesPosition = new Point(
                 (int) ((Radius + newCirclesRadius) * Math.Cos(offsetAngle) + PositionX),
@@ -32,8 +32,8 @@ namespace Osmos
 
             SetNewRadius(Math.Sqrt(Radius * Radius - newCirclesRadius * newCirclesRadius));
 
-            double playerCircleNewVectorX = -newEnemyCircle.VectorX * newEnemyCircle.Area / Area * 3;
-            double playerCircleNewVectorY = -newEnemyCircle.VectorY * newEnemyCircle.Area / Area * 3;
+            double playerCircleNewVectorX = (VectorX - newEnemyCircle.VectorX * newEnemyCircle.Area) / Area;
+            double playerCircleNewVectorY = (VectorY - newEnemyCircle.VectorY * newEnemyCircle.Area) / Area;
 
             SetNewVector(playerCircleNewVectorX, playerCircleNewVectorY);
 

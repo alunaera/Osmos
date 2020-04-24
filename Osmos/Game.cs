@@ -41,9 +41,7 @@ namespace Osmos
         public void Update()
         {
             foreach (GameObject gameObject in gameObjects)
-            {
                 gameObject.Update(gameMode);
-            }
 
             foreach (GameObject gameObject in gameObjects)
             {
@@ -52,48 +50,52 @@ namespace Osmos
                     double valueOfIntersection = gameObject.Radius + nextGameObject.Radius -
                                                  gameObject.GetDistanceToObject(nextGameObject);
 
-                    if (!(valueOfIntersection > 0))
-                        continue;
-
-                    double previousArea = SummaryArea;
-
-                    if (gameObject.Radius > nextGameObject.Radius)
+                    if (valueOfIntersection > 0)
                     {
-                        double gameObjectNewVectorX =
-                            ((gameObject.Area - nextGameObject.Area) * gameObject.VectorX +
-                             2 * nextGameObject.Area * nextGameObject.VectorX) /
-                            (gameObject.Area + nextGameObject.Area);
+                        double previousArea = SummaryArea;
+                        double previousGameObjectArea = gameObject.Area;
+                        double previousNextGameObjectArea = nextGameObject.Area;
 
-                        double gameObjectNewVectorY =
-                            ((gameObject.Area - nextGameObject.Area) * gameObject.VectorY +
-                             2 * nextGameObject.Area * nextGameObject.VectorY) /
-                            (gameObject.Area + nextGameObject.Area);
+                        if (gameObject.Radius > nextGameObject.Radius)
+                        {
+                            nextGameObject.SetNewRadius(GetNewRadiusSmallerCircle(gameObject.Radius,
+                                nextGameObject.Radius,  valueOfIntersection));
 
-                        gameObject.SetNewVector(gameObjectNewVectorX, gameObjectNewVectorY);
+                            double absorbedArea = previousArea - SummaryArea;
 
-                        nextGameObject.SetNewRadius(GetNewRadiusSmallerCircle(gameObject.Radius,
-                            nextGameObject.Radius, valueOfIntersection == 0 ? 1 : valueOfIntersection));
-                        gameObject.SetNewRadius(GetNewRadiusLargerCircle(gameObject,
-                            previousArea - SummaryArea));
-                    }
-                    else
-                    {
-                        double nextGameObjectVectorX =
-                            (2 * gameObject.Area * gameObject.VectorX +
-                             nextGameObject.VectorX * (nextGameObject.Area - gameObject.Area))
-                            / (gameObject.Area + nextGameObject.Area);
+                            gameObject.SetNewRadius(GetNewRadiusLargerCircle(gameObject,
+                                absorbedArea));
 
-                        double nextGameObjectVectorY =
-                            (2 * gameObject.Area * gameObject.VectorY +
-                             nextGameObject.VectorY * (nextGameObject.Area - gameObject.Area))
-                            / (gameObject.Area + nextGameObject.Area);
+                            double gameObjectNewVectorX =
+                                (nextGameObject.VectorX * absorbedArea +
+                                 gameObject.VectorX * previousGameObjectArea) / gameObject.Area;
 
-                        nextGameObject.SetNewVector(nextGameObjectVectorX, nextGameObjectVectorY);
+                            double gameObjectNewVectorY =
+                                (nextGameObject.VectorY * absorbedArea +
+                                 gameObject.VectorY * previousGameObjectArea) / gameObject.Area;
 
-                        gameObject.SetNewRadius(GetNewRadiusSmallerCircle(nextGameObject.Radius,
-                            gameObject.Radius, valueOfIntersection == 0 ? 1 : valueOfIntersection));
-                        nextGameObject.SetNewRadius(GetNewRadiusLargerCircle(nextGameObject,
-                            previousArea - SummaryArea));
+                            gameObject.SetNewVector(gameObjectNewVectorX, gameObjectNewVectorY);
+                        }
+                        else
+                        {
+                            gameObject.SetNewRadius(GetNewRadiusSmallerCircle(nextGameObject.Radius,
+                                gameObject.Radius, valueOfIntersection));
+
+                            double absorbedArea = previousArea - SummaryArea;
+
+                            nextGameObject.SetNewRadius(GetNewRadiusLargerCircle(nextGameObject,
+                                absorbedArea));
+
+                            double nextGameObjectVectorX =
+                                (gameObject.VectorX * absorbedArea +
+                                 nextGameObject.VectorX * previousNextGameObjectArea) / nextGameObject.Area;
+
+                            double nextGameObjectVectorY =
+                                (gameObject.VectorY * absorbedArea +
+                                 nextGameObject.VectorY * previousNextGameObjectArea) / nextGameObject.Area;
+
+                            nextGameObject.SetNewVector(nextGameObjectVectorX, nextGameObjectVectorY);
+                        }
                     }
                 }
             }

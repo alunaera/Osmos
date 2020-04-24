@@ -56,7 +56,7 @@
             // Timer
             // 
             this.Timer.Enabled = true;
-            this.Timer.Interval = 50;
+            this.Timer.Interval = 15;
             this.Timer.Tick += new System.EventHandler(this.TickTimer);
             // 
             // menuStrip1
@@ -82,14 +82,14 @@
             // replusionToolStripMenuItem
             // 
             this.replusionToolStripMenuItem.Name = "replusionToolStripMenuItem";
-            this.replusionToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.replusionToolStripMenuItem.Size = new System.Drawing.Size(157, 26);
             this.replusionToolStripMenuItem.Text = "Repulsion";
             this.replusionToolStripMenuItem.Click += new System.EventHandler(this.ClickRepulsion);
             // 
             // cycleToolStripMenuItem
             // 
             this.cycleToolStripMenuItem.Name = "cycleToolStripMenuItem";
-            this.cycleToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.cycleToolStripMenuItem.Size = new System.Drawing.Size(157, 26);
             this.cycleToolStripMenuItem.Text = "Cycle";
             this.cycleToolStripMenuItem.Click += new System.EventHandler(this.ClickCycle);
             // 
