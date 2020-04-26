@@ -5,13 +5,16 @@ namespace Osmos
 {
     internal class PlayerCircle : GameObject
     {
+
         public PlayerCircle(int gameFieldWidth, int gameFieldHeight)
         {
             GameFieldWidth = gameFieldWidth;
             GameFieldHeight = gameFieldHeight;
-            SetNewPosition(gameFieldWidth / 2, gameFieldHeight / 2);
             ObjectType = ObjectType.PlayerCircle;
-            Radius = Game.Random.Next(60, 80);
+
+            SetAreaByRadius(Game.Random.Next(60, 80));
+            PositionX = Game.Random.Next(0, gameFieldWidth);
+            PositionY = Game.Random.Next(0, gameFieldHeight);
         }
 
         public EnemyCircle GetNewEnemyCircle(int cursorPositionX, int cursorPositionY)
@@ -19,18 +22,16 @@ namespace Osmos
             double offsetAngle = PositionX - cursorPositionX >= 0
                 ? Math.Atan((PositionY - cursorPositionY) / (PositionX - cursorPositionX)) - Math.PI
                 : Math.Atan((PositionY - cursorPositionY) / (PositionX - cursorPositionX));
-
             double newCirclesRadius = Radius / Math.Sqrt(25);
-
-            Point newCirclesPosition = new Point(
-                (int) ((Radius + newCirclesRadius) * Math.Cos(offsetAngle) + PositionX),
-                (int) ((Radius + newCirclesRadius) * Math.Sin(offsetAngle) + PositionY));
+            double newCirclesPositionX = (Radius + newCirclesRadius) * Math.Cos(offsetAngle) + PositionX;
+            double newCirclesPositionY = (Radius + newCirclesRadius) * Math.Sin(offsetAngle) + PositionY;
 
             EnemyCircle newEnemyCircle = new EnemyCircle(GameFieldWidth, GameFieldHeight, newCirclesRadius);
-            newEnemyCircle.SetNewPosition(newCirclesPosition.X, newCirclesPosition.Y);
+
+            newEnemyCircle.SetNewPosition(newCirclesPositionX, newCirclesPositionY);
             newEnemyCircle.SetNewVector(Math.Cos(offsetAngle) * 20, Math.Sin(offsetAngle) * 20);
 
-            SetNewRadius(Math.Sqrt(Radius * Radius - newCirclesRadius * newCirclesRadius));
+            SetAreaByRadius(Math.Sqrt(Radius * Radius - newCirclesRadius * newCirclesRadius));
 
             double playerCircleNewVectorX = (VectorX - newEnemyCircle.VectorX * newEnemyCircle.Area) / Area;
             double playerCircleNewVectorY = (VectorY - newEnemyCircle.VectorY * newEnemyCircle.Area) / Area;

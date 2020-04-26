@@ -13,8 +13,8 @@ namespace Osmos
         public ObjectType ObjectType { get; protected set; }
         public double VectorX { get; protected set; }
         public double VectorY { get; protected set; }
-        public double Radius { get; protected set; }
-        public double Area => Radius * Radius * Math.PI;
+        public double Radius => Math.Sqrt(Area / Math.PI);
+        public double Area { get; set; }
         public double Impulse => Area * Math.Sqrt(VectorX * VectorX + VectorY * VectorY);
 
         public void Update(GameMode gameMode)
@@ -31,9 +31,9 @@ namespace Osmos
             PositionY = positionY;
         }
 
-        public void SetNewRadius(double radius)
+        protected void SetAreaByRadius(double radius)
         {
-            Radius = radius;
+            Area = radius * radius * Math.PI;
         }
 
         public void SetNewVector(double vectorX, double vectorY)
@@ -81,7 +81,7 @@ namespace Osmos
                         PositionY = GameFieldHeight + Radius;
 
                     if (PositionX - Radius > GameFieldWidth)
-                        PositionX =  0;
+                        PositionX = 0;
 
                     if (PositionY - Radius > GameFieldHeight)
                         PositionY = 0;
@@ -89,7 +89,6 @@ namespace Osmos
                     break;
             }
         }
-
 
         private void SetOppositeVector(VectorDirection vectorDirection)
         {
@@ -114,7 +113,8 @@ namespace Osmos
 
         public void Draw(Graphics graphics, Brush brush)
         {
-            graphics.FillEllipse(brush, (int)(PositionX - Radius), (int)(PositionY - Radius), (int)Radius * 2, (int)Radius * 2);
+            graphics.FillEllipse(brush, (int) (PositionX - Radius), (int) (PositionY - Radius), 
+                (int) Radius * 2, (int) Radius * 2);
         }
     }
 }

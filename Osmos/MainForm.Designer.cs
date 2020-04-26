@@ -31,12 +31,12 @@
             this.components = new System.ComponentModel.Container();
             this.gameField = new System.Windows.Forms.PictureBox();
             this.Timer = new System.Windows.Forms.Timer(this.components);
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.MenuStrip = new System.Windows.Forms.MenuStrip();
             this.gameModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.replusionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cycleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.gameField)).BeginInit();
-            this.menuStrip1.SuspendLayout();
+            this.MenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // gameField
@@ -51,7 +51,8 @@
             this.gameField.TabIndex = 0;
             this.gameField.TabStop = false;
             this.gameField.Paint += new System.Windows.Forms.PaintEventHandler(this.Draw);
-            this.gameField.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ClickMouse);
+            this.gameField.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DownMouse);
+            this.gameField.MouseUp += new System.Windows.Forms.MouseEventHandler(this.UpMouse);
             // 
             // Timer
             // 
@@ -59,16 +60,16 @@
             this.Timer.Interval = 15;
             this.Timer.Tick += new System.EventHandler(this.TickTimer);
             // 
-            // menuStrip1
+            // MenuStrip
             // 
-            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.gameModeToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1501, 28);
-            this.menuStrip1.TabIndex = 1;
-            this.menuStrip1.Text = "menuStrip1";
+            this.MenuStrip.Location = new System.Drawing.Point(0, 0);
+            this.MenuStrip.Name = "MenuStrip";
+            this.MenuStrip.Size = new System.Drawing.Size(1501, 28);
+            this.MenuStrip.TabIndex = 1;
+            this.MenuStrip.Text = "MenuStrip";
             // 
             // gameModeToolStripMenuItem
             // 
@@ -98,27 +99,25 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.ClientSize = new System.Drawing.Size(1501, 732);
             this.Controls.Add(this.gameField);
-            this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.MenuStrip);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MainMenuStrip = this.menuStrip1;
+            this.MainMenuStrip = this.MenuStrip;
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Osmos";
-            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ClickMouse);
             ((System.ComponentModel.ISupportInitialize)(this.gameField)).EndInit();
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
+            this.MenuStrip.ResumeLayout(false);
+            this.MenuStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
 
         private System.Windows.Forms.PictureBox gameField;
         private System.Windows.Forms.Timer Timer;
-        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.MenuStrip MenuStrip;
         private System.Windows.Forms.ToolStripMenuItem gameModeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem replusionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cycleToolStripMenuItem;

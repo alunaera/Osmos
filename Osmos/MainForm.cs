@@ -6,6 +6,9 @@ namespace Osmos
     public partial class MainForm : Form
     {
         private readonly Game game = new Game();
+        private bool isMouseDowned;
+        private int cursorPositionX;
+        private int cursorPositionY;
 
         public MainForm()
         {
@@ -42,13 +45,12 @@ namespace Osmos
 
         private void TickTimer(object sender, System.EventArgs e)
         {
-            game.Update();
-            gameField.Refresh();
-        }
+            game.Update(Timer.Interval);
 
-        private void ClickMouse(object sender, MouseEventArgs e)
-        {
-            game.MakeShot(e.X, e.Y);
+            if(isMouseDowned)
+                game.MakeShot(cursorPositionX, cursorPositionY);
+
+            gameField.Refresh();
         }
 
         private void ClickRepulsion(object sender, System.EventArgs e)
@@ -59,6 +61,18 @@ namespace Osmos
         private void ClickCycle(object sender, System.EventArgs e)
         {
             game.ChangeGameMode(GameMode.Cycle);
+        }
+
+        private void DownMouse(object sender, MouseEventArgs e)
+        {
+            isMouseDowned = true;
+            cursorPositionX = e.X;
+            cursorPositionY = e.Y;
+        }
+
+        private void UpMouse(object sender, MouseEventArgs e)
+        {
+            isMouseDowned = false;
         }
     }
 }
