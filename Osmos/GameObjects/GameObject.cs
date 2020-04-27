@@ -47,6 +47,7 @@ namespace Osmos
             switch (gameMode)
             {
                 case GameMode.Repulsion:
+                case GameMode.ManyCircles:
                     if (PositionX - Radius < 0)
                     {
                         PositionX = Radius;

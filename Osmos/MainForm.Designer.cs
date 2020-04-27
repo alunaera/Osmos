@@ -35,6 +35,7 @@
             this.gameModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.replusionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cycleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.manyCirclesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.gameField)).BeginInit();
             this.MenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -75,7 +76,8 @@
             // 
             this.gameModeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.replusionToolStripMenuItem,
-            this.cycleToolStripMenuItem});
+            this.cycleToolStripMenuItem,
+            this.manyCirclesToolStripMenuItem});
             this.gameModeToolStripMenuItem.Name = "gameModeToolStripMenuItem";
             this.gameModeToolStripMenuItem.Size = new System.Drawing.Size(105, 24);
             this.gameModeToolStripMenuItem.Text = "Game mode";
@@ -83,16 +85,23 @@
             // replusionToolStripMenuItem
             // 
             this.replusionToolStripMenuItem.Name = "replusionToolStripMenuItem";
-            this.replusionToolStripMenuItem.Size = new System.Drawing.Size(157, 26);
+            this.replusionToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.replusionToolStripMenuItem.Text = "Repulsion";
             this.replusionToolStripMenuItem.Click += new System.EventHandler(this.ClickRepulsion);
             // 
             // cycleToolStripMenuItem
             // 
             this.cycleToolStripMenuItem.Name = "cycleToolStripMenuItem";
-            this.cycleToolStripMenuItem.Size = new System.Drawing.Size(157, 26);
+            this.cycleToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.cycleToolStripMenuItem.Text = "Cycle";
             this.cycleToolStripMenuItem.Click += new System.EventHandler(this.ClickCycle);
+            // 
+            // manyCirclesToolStripMenuItem
+            // 
+            this.manyCirclesToolStripMenuItem.Name = "manyCirclesToolStripMenuItem";
+            this.manyCirclesToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.manyCirclesToolStripMenuItem.Text = "Many Circles";
+            this.manyCirclesToolStripMenuItem.Click += new System.EventHandler(this.ClickManyCircles);
             // 
             // MainForm
             // 
@@ -111,6 +120,7 @@
             this.MenuStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion
@@ -121,6 +131,7 @@
         private System.Windows.Forms.ToolStripMenuItem gameModeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem replusionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cycleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem manyCirclesToolStripMenuItem;
     }
 }
 

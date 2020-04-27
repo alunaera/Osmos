@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace Osmos
+﻿namespace Osmos
 {
-    [Flags]
     internal enum GameMode
     {
-        Repulsion = 1,
-        Cycle = 2
+        Repulsion,
+        Cycle,
+        ManyCircles
     }
 }

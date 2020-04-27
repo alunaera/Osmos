@@ -1,4 +1,5 @@
-﻿using System.Drawing.Drawing2D;
+﻿using System.Diagnostics;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace Osmos
@@ -7,6 +8,7 @@ namespace Osmos
     {
         private readonly Game game = new Game();
         private bool isMouseDowned;
+        private double fps;
         private int cursorPositionX;
         private int cursorPositionY;
 
@@ -45,22 +47,16 @@ namespace Osmos
 
         private void TickTimer(object sender, System.EventArgs e)
         {
-            game.Update(Timer.Interval);
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            game.Update(fps);
+            stopwatch.Stop();
+
+            fps = 1000 / (Timer.Interval + stopwatch.ElapsedMilliseconds);
 
             if(isMouseDowned)
                 game.MakeShot(cursorPositionX, cursorPositionY);
 
             gameField.Refresh();
-        }
-
-        private void ClickRepulsion(object sender, System.EventArgs e)
-        {
-            game.ChangeGameMode(GameMode.Repulsion);
-        }
-
-        private void ClickCycle(object sender, System.EventArgs e)
-        {
-            game.ChangeGameMode(GameMode.Cycle);
         }
 
         private void DownMouse(object sender, MouseEventArgs e)
@@ -73,6 +69,21 @@ namespace Osmos
         private void UpMouse(object sender, MouseEventArgs e)
         {
             isMouseDowned = false;
+        }
+
+        private void ClickRepulsion(object sender, System.EventArgs e)
+        {
+            game.ChangeGameMode(GameMode.Repulsion);
+        }
+
+        private void ClickCycle(object sender, System.EventArgs e)
+        {
+            game.ChangeGameMode(GameMode.Cycle);
+        }
+
+        private void ClickManyCircles(object sender, System.EventArgs e)
+        {
+            game.ChangeGameMode(GameMode.ManyCircles);
         }
     }
 }
