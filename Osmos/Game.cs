@@ -178,8 +178,9 @@ namespace Osmos
         private void DrawInterface(Graphics graphics)
         {
             graphics.DrawString("Summary area: " + (int)SummaryArea, font, Brushes.Black, gameFieldWidth - 250, 10);
-            graphics.DrawString("Summary impulse: " + (int)circles.Sum(circle => circle.Impulse), font, Brushes.Black, gameFieldWidth - 250, 30);
-            graphics.DrawString("FPS: " + (int)fps, font, Brushes.Black, gameFieldWidth - 250, 50);
+            graphics.DrawString("Summary impX: " + (int)circles.Sum(circle => circle.ImpulseX), font, Brushes.Black, gameFieldWidth - 250, 30);
+            graphics.DrawString("Summary impY: " + (int)circles.Sum(circle => circle.ImpulseY), font, Brushes.Black, gameFieldWidth - 250, 50);
+            graphics.DrawString("FPS: " + (int)fps, font, Brushes.Black, gameFieldWidth - 250, 70);
         }
     }
 }

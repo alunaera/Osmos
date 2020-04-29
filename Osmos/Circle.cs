@@ -17,7 +17,8 @@ namespace Osmos
         public double Area { get; set; }
 
         public double Radius => Math.Sqrt(Area / Math.PI);
-        public double Impulse => Area * Math.Sqrt(VectorX * VectorX + VectorY * VectorY);
+        public double ImpulseX => Area * VectorX;
+        public double ImpulseY => Area * VectorY;
 
         public Circle(int gameFieldWidth, int gameFieldHeight, CircleType circleType)
         {
@@ -131,10 +132,8 @@ namespace Osmos
 
             SetAreaByRadius(Math.Sqrt(Radius * Radius - newCirclesRadius * newCirclesRadius));
 
-            double playerCircleNewVectorX = (VectorX - newEnemyCircle.VectorX * newEnemyCircle.Area) / Area;
-            double playerCircleNewVectorY = (VectorY - newEnemyCircle.VectorY * newEnemyCircle.Area) / Area;
-
-            SetNewVector(playerCircleNewVectorX, playerCircleNewVectorY);
+            VectorX += (VectorX - newEnemyCircle.VectorX * newEnemyCircle.Area) / Area;
+            VectorY += (VectorY - newEnemyCircle.VectorY * newEnemyCircle.Area) / Area;
 
             return newEnemyCircle;
         }
