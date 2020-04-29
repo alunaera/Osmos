@@ -151,12 +151,17 @@ namespace Osmos
             }
         }
 
+        public double GetSqrtDistanceToObject(Circle circle)
+        {
+            return Math.Sqrt(GetDistanceToObject(circle));
+        }
+
         public double GetDistanceToObject(Circle circle)
         {
-            double componentX = Math.Pow(PositionX - circle.PositionX, 2);
-            double componentY = Math.Pow(PositionY - circle.PositionY, 2);
+            double componentX = (PositionX - circle.PositionX) * (PositionX - circle.PositionX);
+            double componentY = (PositionY - circle.PositionY) * (PositionY - circle.PositionY);
 
-            return Math.Sqrt(componentX + componentY);
+            return componentX + componentY;
         }
 
         public void Draw(Graphics graphics, Brush brush)

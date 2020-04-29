@@ -72,16 +72,14 @@ namespace Osmos
             {
                 foreach (Circle nextCircle in circles)
                 {
-                    double valueOfIntersection = circle.Radius + nextCircle.Radius -
-                                                 circle.GetDistanceToObject(nextCircle);
-
-                    if (!(valueOfIntersection > 0))
-                        continue;
-
-                    if (circle.Radius > nextCircle.Radius)
-                        Absorbing(circle, nextCircle);
-                    else
-                        Absorbing(nextCircle, circle);
+                    if ((circle.Radius + nextCircle.Radius) * (circle.Radius + nextCircle.Radius)
+                           > circle.GetDistanceToObject(nextCircle))
+                    {
+                        if (circle.Radius > nextCircle.Radius)
+                            Absorbing(circle, nextCircle);
+                        else
+                            Absorbing(nextCircle, circle);
+                    }
                 }
             }
 
@@ -99,7 +97,7 @@ namespace Osmos
 
         private static void Absorbing(Circle largerCircle, Circle smallerCircle)
         {
-            double distance = largerCircle.GetDistanceToObject(smallerCircle);
+            double distance = largerCircle.GetSqrtDistanceToObject(smallerCircle);
             double previousLargerCircleArea = largerCircle.Area;
             double previousSmallerCircleArea = smallerCircle.Area;
 
