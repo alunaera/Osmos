@@ -59,7 +59,6 @@ namespace Osmos
                     }
                     break;
             }
-
         }
 
         public void Update(double fps)
