@@ -47,11 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameMode.cs" />
-    <Compile Include="GameObjects\EnemyCircle.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="GameObjects\GameObject.cs" />
-    <Compile Include="GameObjects\PlayerCircle.cs" />
-    <Compile Include="ObjectType.cs" />
+    <Compile Include="Circle.cs" />
+    <Compile Include="CircleType.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

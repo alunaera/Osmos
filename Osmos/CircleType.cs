@@ -3,7 +3,7 @@
 namespace Osmos
 {
     [Flags]
-    internal enum ObjectType
+    internal enum CircleType
     {
         PlayerCircle = 1,
         EnemyCircle = 2

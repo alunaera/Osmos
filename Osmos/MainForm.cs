@@ -39,12 +39,6 @@ namespace Osmos
             game.StartGame(gameField.ClientRectangle.Width, gameField.ClientRectangle.Height);
         }
 
-        private void Draw(object sender, PaintEventArgs e)
-        {
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            game.Draw(e.Graphics);
-        }
-
         private void TickTimer(object sender, System.EventArgs e)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -57,6 +51,12 @@ namespace Osmos
                 game.MakeShot(cursorPositionX, cursorPositionY);
 
             gameField.Refresh();
+        }
+
+        private void Draw(object sender, PaintEventArgs e)
+        {
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            game.Draw(e.Graphics);
         }
 
         private void DownMouse(object sender, MouseEventArgs e)

@@ -15,9 +15,9 @@ namespace Osmos
         private double fps;
         private int delayOfShot;
         private GameMode gameMode;
-        private List<GameObject> gameObjects;
-        private double SummaryArea => gameObjects.Sum(gameObject => gameObject.Area);
-        private PlayerCircle PlayerCircle => (PlayerCircle) gameObjects[0];
+        private List<Circle> circles;
+        private double SummaryArea => circles.Sum(circle => circle.Area);
+        private Circle PlayerCircle => circles[0];
 
         public event Action Defeat = delegate { };
         public event Action Victory = delegate { };
@@ -28,7 +28,7 @@ namespace Osmos
             this.gameFieldHeight = gameFieldHeight;
             delayOfShot = 0;
 
-            gameObjects = new List<GameObject> ();
+            circles = new List<Circle> ();
             GenerateCircles();
         }
 
@@ -40,23 +40,23 @@ namespace Osmos
             {
                 case GameMode.Cycle:
                 case GameMode.Repulsion:
-                    gameObjects.Add(new PlayerCircle(gameFieldWidth, gameFieldHeight));
+                    circles.Add(new Circle(gameFieldWidth, gameFieldHeight, CircleType.PlayerCircle));
 
                     circlesCount = Random.Next(300, 400);
                     for (int i = 0; i < circlesCount; i++)
-                        gameObjects.Add(new EnemyCircle(gameFieldWidth, gameFieldHeight));
+                        circles.Add(new Circle(gameFieldWidth, gameFieldHeight, CircleType.EnemyCircle));
                     break;
-                case GameMode.ManyCircles:
-                    gameObjects.Add(new PlayerCircle(gameFieldWidth, gameFieldHeight));
-                    gameObjects[0].Area = 8 * Math.PI;
 
-                    circlesCount = 10000;
+                case GameMode.ManyCircles:
+                    circles.Add(new Circle(gameFieldWidth, gameFieldHeight, CircleType.PlayerCircle));
+                    PlayerCircle.Area = 32 * Math.PI;
+
+                    circlesCount = 2000;
                     for (int i = 0; i < circlesCount; i++)
                     {
-                        gameObjects.Add(new EnemyCircle(gameFieldWidth, gameFieldHeight));
-                        gameObjects[i + 1].Area = 4 * Math.PI;
+                        circles.Add(new Circle(gameFieldWidth, gameFieldHeight, CircleType.EnemyCircle));
+                        circles[i + 1].Area = 16 * Math.PI;
                     }
-
                     break;
             }
 
@@ -66,27 +66,27 @@ namespace Osmos
         {
             this.fps = fps;
 
-            foreach (GameObject gameObject in gameObjects)
-                gameObject.Update(gameMode);
+            foreach (Circle circle in circles)
+                circle.Update(gameMode);
 
-            foreach (GameObject gameObject in gameObjects)
+            foreach (Circle circle in circles)
             {
-                foreach (GameObject nextGameObject in gameObjects)
+                foreach (Circle nextCircle in circles)
                 {
-                    double valueOfIntersection = gameObject.Radius + nextGameObject.Radius -
-                                                 gameObject.GetDistanceToObject(nextGameObject);
+                    double valueOfIntersection = circle.Radius + nextCircle.Radius -
+                                                 circle.GetDistanceToObject(nextCircle);
 
                     if (!(valueOfIntersection > 0))
                         continue;
 
-                    if (gameObject.Radius > nextGameObject.Radius)
-                        Absorbing(gameObject, nextGameObject);
+                    if (circle.Radius > nextCircle.Radius)
+                        Absorbing(circle, nextCircle);
                     else
-                        Absorbing(nextGameObject, gameObject);
+                        Absorbing(nextCircle, circle);
                 }
             }
 
-            gameObjects.RemoveAll(gameObject => gameObject.ObjectType != ObjectType.PlayerCircle && gameObject.Radius <= 0);
+            circles.RemoveAll(circle => circle.CircleType != CircleType.PlayerCircle && circle.Radius <= 0);
 
             if (delayOfShot > 0)
                 delayOfShot--;
@@ -98,7 +98,7 @@ namespace Osmos
                 Victory();
         }
 
-        private static void Absorbing(GameObject largerCircle, GameObject smallerCircle)
+        private static void Absorbing(Circle largerCircle, Circle smallerCircle)
         {
             double distance = largerCircle.GetDistanceToObject(smallerCircle);
             double previousLargerCircleArea = largerCircle.Area;
@@ -116,28 +116,19 @@ namespace Osmos
                 largerCircle.Area += previousSmallerCircleArea - smallerCircle.Area;
             }
 
-
-            double gameObjectNewVectorX =
+            // Momentum Conservation Principle
+            double largerCircleVectorX =
                 (smallerCircle.VectorX * (previousSmallerCircleArea - smallerCircle.Area) +
                  largerCircle.VectorX * previousLargerCircleArea) / largerCircle.Area;
 
-            double gameObjectNewVectorY =
+            double largerCircleVectorY =
                 (smallerCircle.VectorY * (previousSmallerCircleArea - smallerCircle.Area) +
                  largerCircle.VectorY * previousLargerCircleArea) / largerCircle.Area;
 
-            largerCircle.SetNewVector(gameObjectNewVectorX, gameObjectNewVectorY);
+            largerCircle.SetNewVector(largerCircleVectorX, largerCircleVectorY);
         }
 
-        public void MakeShot(int cursorPositionX, int cursorPositionY)
-        {
-            if (delayOfShot <= 0)
-            {
-                gameObjects.Add(PlayerCircle.GetNewEnemyCircle(cursorPositionX, cursorPositionY));
-                delayOfShot = 20;
-            }
-        }
-
-
+        // This is my analytical solution for correct circle's absorbing
         private static double GetNewRadiusSmallerCircle(double largerRadius, double smallerRadius, double valueOfIntersection)
         {
             double b = largerRadius - smallerRadius + valueOfIntersection;
@@ -149,6 +140,15 @@ namespace Osmos
             return newRadius * newRadius * Math.PI;
         }
 
+        public void MakeShot(int cursorPositionX, int cursorPositionY)
+        {
+            if (delayOfShot <= 0)
+            {
+                circles.Add(PlayerCircle.GetNewEnemyCircle(cursorPositionX, cursorPositionY));
+                delayOfShot = 20;
+            }
+        }
+
         public void ChangeGameMode(GameMode gameMode)
         {
             this.gameMode = gameMode;
@@ -157,24 +157,28 @@ namespace Osmos
 
         public void Draw(Graphics graphics)
         {
-            foreach (GameObject gameObject in gameObjects)
-                switch (gameObject.ObjectType)
+            DrawCircles(graphics);
+            DrawInterface(graphics);
+        }
+
+        private void DrawCircles(Graphics graphics)
+        {
+            foreach (Circle circle in circles)
+                switch (circle.CircleType)
                 {
-                    case ObjectType.PlayerCircle:
-                        PlayerCircle.Draw(graphics);
+                    case CircleType.PlayerCircle:
+                        circle.Draw(graphics, Brushes.Green);
                         break;
-                    case ObjectType.EnemyCircle:
-                        gameObject.Draw(graphics, gameObject.Radius <= PlayerCircle.Radius ? Brushes.Blue : Brushes.Red);
+                    case CircleType.EnemyCircle:
+                        circle.Draw(graphics, circle.Radius <= PlayerCircle.Radius ? Brushes.Blue : Brushes.Red);
                         break;
                 }
-            
-            DrawInterface(graphics);
         }
 
         private void DrawInterface(Graphics graphics)
         {
             graphics.DrawString("Summary area: " + (int)SummaryArea, font, Brushes.Black, gameFieldWidth - 250, 10);
-            graphics.DrawString("Summary impulse: " + (int)gameObjects.Sum(gameObject => gameObject.Impulse), font, Brushes.Black, gameFieldWidth - 250, 30);
+            graphics.DrawString("Summary impulse: " + (int)circles.Sum(circle => circle.Impulse), font, Brushes.Black, gameFieldWidth - 250, 30);
             graphics.DrawString("FPS: " + (int)fps, font, Brushes.Black, gameFieldWidth - 250, 50);
         }
     }
