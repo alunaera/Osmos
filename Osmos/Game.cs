@@ -51,7 +51,7 @@ namespace Osmos
                     circles.Add(new Circle(gameFieldWidth, gameFieldHeight, CircleType.PlayerCircle));
                     PlayerCircle.Area = 32 * Math.PI;
 
-                    circlesCount = 2000;
+                    circlesCount = 6000;
                     for (int i = 0; i < circlesCount; i++)
                     {
                         circles.Add(new Circle(gameFieldWidth, gameFieldHeight, CircleType.EnemyCircle));
@@ -83,12 +83,12 @@ namespace Osmos
                 }
             }
 
-            circles.RemoveAll(circle => circle.CircleType != CircleType.PlayerCircle && circle.Radius <= 0);
+            circles.RemoveAll(circle => circle.CircleType != CircleType.PlayerCircle && circle.Area <= 0);
 
             if (delayOfShot > 0)
                 delayOfShot--;
 
-            if (PlayerCircle.Radius <= 0)
+            if (PlayerCircle.Area <= 0)
                 Defeat();
 
             if (PlayerCircle.Area > SummaryArea / 2)
@@ -97,11 +97,11 @@ namespace Osmos
 
         private static void Absorbing(Circle largerCircle, Circle smallerCircle)
         {
-            double distance = largerCircle.GetSqrtDistanceToObject(smallerCircle);
+            double distance = largerCircle.GetDistanceToObject(smallerCircle);
             double previousLargerCircleArea = largerCircle.Area;
             double previousSmallerCircleArea = smallerCircle.Area;
 
-            if (largerCircle.Radius > smallerCircle.Radius + distance)
+            if ((largerCircle.Radius - smallerCircle.Radius) * (largerCircle.Radius - smallerCircle.Radius) > distance)
             {
                 largerCircle.Area += smallerCircle.Area;
                 smallerCircle.Area = 0;
@@ -109,7 +109,7 @@ namespace Osmos
             else
             {
                 smallerCircle.Area = GetNewRadiusSmallerCircle(largerCircle.Radius,
-                    smallerCircle.Radius, largerCircle.Radius + smallerCircle.Radius - distance);
+                    smallerCircle.Radius, largerCircle.Radius + smallerCircle.Radius - Math.Sqrt(distance));
                 largerCircle.Area += previousSmallerCircleArea - smallerCircle.Area;
             }
 
@@ -167,7 +167,7 @@ namespace Osmos
                         circle.Draw(graphics, Brushes.Green);
                         break;
                     case CircleType.EnemyCircle:
-                        circle.Draw(graphics, circle.Radius <= PlayerCircle.Radius ? Brushes.Blue : Brushes.Red);
+                        circle.Draw(graphics, circle.Area <= PlayerCircle.Area ? Brushes.Blue : Brushes.Red);
                         break;
                 }
         }

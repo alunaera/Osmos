@@ -22,6 +22,7 @@ namespace Osmos
             {
                 gameField.Refresh();
                 Timer.Enabled = false;
+                isMouseDowned = false;
                 MessageBox.Show("Game over");
                 game.StartGame(gameField.ClientRectangle.Width, gameField.ClientRectangle.Height);
                 Timer.Enabled = true;
@@ -31,6 +32,7 @@ namespace Osmos
             {
                 gameField.Refresh();
                 Timer.Enabled = false;
+                isMouseDowned = false;
                 MessageBox.Show("You win");
                 game.StartGame(gameField.ClientRectangle.Width, gameField.ClientRectangle.Height);
                 Timer.Enabled = true;

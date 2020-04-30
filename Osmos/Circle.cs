@@ -119,7 +119,7 @@ namespace Osmos
                 ? Math.Atan((PositionY - cursorPositionY) / (PositionX - cursorPositionX)) - Math.PI
                 : Math.Atan((PositionY - cursorPositionY) / (PositionX - cursorPositionX));
 
-            double newCirclesRadius = Radius / Math.Sqrt(25);
+            double newCirclesRadius = Radius / 5;
 
             Circle newEnemyCircle = new Circle(gameFieldWidth, gameFieldHeight, CircleType.EnemyCircle)
             {
@@ -127,10 +127,10 @@ namespace Osmos
                 PositionY = (Radius + newCirclesRadius) * Math.Sin(offsetAngle) + PositionY,
                 VectorX = Math.Cos(offsetAngle) * 20,
                 VectorY = Math.Sin(offsetAngle) * 20,
+                Area = newCirclesRadius * newCirclesRadius * Math.PI
             };
-            newEnemyCircle.SetAreaByRadius(newCirclesRadius);
 
-            SetAreaByRadius(Math.Sqrt(Radius * Radius - newCirclesRadius * newCirclesRadius));
+            Area -= newEnemyCircle.Area;
 
             VectorX += (VectorX - newEnemyCircle.VectorX * newEnemyCircle.Area) / Area;
             VectorY += (VectorY - newEnemyCircle.VectorY * newEnemyCircle.Area) / Area;
@@ -149,11 +149,6 @@ namespace Osmos
                     VectorY = -VectorY;
                     break;
             }
-        }
-
-        public double GetSqrtDistanceToObject(Circle circle)
-        {
-            return Math.Sqrt(GetDistanceToObject(circle));
         }
 
         public double GetDistanceToObject(Circle circle)
