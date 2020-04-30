@@ -51,7 +51,7 @@ namespace Osmos
                     circles.Add(new Circle(gameFieldWidth, gameFieldHeight, CircleType.PlayerCircle));
                     PlayerCircle.Radius = 5;
 
-                    circlesCount = 6000;
+                    circlesCount = 10000;
                     for (int i = 0; i < circlesCount; i++)
                     {
                         circles.Add(new Circle(gameFieldWidth, gameFieldHeight, CircleType.EnemyCircle));
@@ -68,18 +68,22 @@ namespace Osmos
             foreach (Circle circle in circles)
                 circle.Update(gameMode);
 
-            foreach (Circle circle in circles)
+            for (int i = 0; i < circles.Count; i++)
             {
-                foreach (Circle nextCircle in circles)
+                Circle circle = circles[i];
+
+                for (int j = i; j < circles.Count; j++)
                 {
-                    if ((circle.Radius + nextCircle.Radius) * (circle.Radius + nextCircle.Radius)
-                           > circle.GetDistanceToObject(nextCircle))
-                    {
-                        if (circle.Radius > nextCircle.Radius)
-                            Absorbing(circle, nextCircle);
-                        else
-                            Absorbing(nextCircle, circle);
-                    }
+                    Circle nextCircle = circles[j];
+
+                    if (!((circle.Radius + nextCircle.Radius) * (circle.Radius + nextCircle.Radius)
+                          > circle.GetDistanceToObject(nextCircle))) 
+                        continue;
+
+                    if (circle.Radius >= nextCircle.Radius)
+                        Absorbing(circle, nextCircle);
+                    else
+                        Absorbing(nextCircle, circle);
                 }
             }
 
