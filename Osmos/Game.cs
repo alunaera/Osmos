@@ -49,13 +49,13 @@ namespace Osmos
 
                 case GameMode.ManyCircles:
                     circles.Add(new Circle(gameFieldWidth, gameFieldHeight, CircleType.PlayerCircle));
-                    PlayerCircle.Area = 32 * Math.PI;
+                    PlayerCircle.Radius = 5;
 
                     circlesCount = 6000;
                     for (int i = 0; i < circlesCount; i++)
                     {
                         circles.Add(new Circle(gameFieldWidth, gameFieldHeight, CircleType.EnemyCircle));
-                        circles[i + 1].Area = 16 * Math.PI;
+                        circles[i + 1].Radius = 3;
                     }
                     break;
             }
@@ -103,14 +103,14 @@ namespace Osmos
 
             if ((largerCircle.Radius - smallerCircle.Radius) * (largerCircle.Radius - smallerCircle.Radius) > distance)
             {
-                largerCircle.Area += smallerCircle.Area;
-                smallerCircle.Area = 0;
+                largerCircle.SetRadiusByArea(largerCircle.Area + smallerCircle.Area);
+                smallerCircle.Radius = 0;
             }
             else
             {
-                smallerCircle.Area = GetNewRadiusSmallerCircle(largerCircle.Radius,
+                smallerCircle.Radius = GetNewRadiusSmallerCircle(largerCircle.Radius,
                     smallerCircle.Radius, largerCircle.Radius + smallerCircle.Radius - Math.Sqrt(distance));
-                largerCircle.Area += previousSmallerCircleArea - smallerCircle.Area;
+                largerCircle.SetRadiusByArea(largerCircle.Area + previousSmallerCircleArea - smallerCircle.Area);
             }
 
             // Momentum Conservation Principle
@@ -132,9 +132,7 @@ namespace Osmos
             double c = valueOfIntersection * (valueOfIntersection - 2 * smallerRadius) / 2;
             double sqrtOfDiscriminant = Math.Sqrt(b * b - 4 * c);
 
-            double newRadius = smallerRadius - valueOfIntersection - (sqrtOfDiscriminant - b) / 2;
-
-            return newRadius * newRadius * Math.PI;
+            return smallerRadius - valueOfIntersection - (sqrtOfDiscriminant - b) / 2;
         }
 
         public void MakeShot(int cursorPositionX, int cursorPositionY)

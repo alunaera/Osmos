@@ -14,9 +14,9 @@ namespace Osmos
         public CircleType CircleType { get; }
         public double VectorX { get; private set; }
         public double VectorY { get; private set; }
-        public double Area { get; set; }
+        public double Radius { get; set; }
 
-        public double Radius => Math.Sqrt(Area / Math.PI);
+        public double Area => Radius * Radius * Math.PI;
         public double ImpulseX => Area * VectorX;
         public double ImpulseY => Area * VectorY;
 
@@ -33,12 +33,12 @@ namespace Osmos
             switch (circleType)
             {
                 case CircleType.EnemyCircle:
-                    SetAreaByRadius(Game.Random.Next(10, 20));
+                    Radius = Game.Random.Next(10, 20);
                     VectorX = Game.Random.Next(-2, 2);
                     VectorY = Game.Random.Next(-2, 2);
                     break;
                 case CircleType.PlayerCircle:
-                    SetAreaByRadius(Game.Random.Next(40, 60));
+                    Radius =  Game.Random.Next(40, 60);
                     VectorX = 0;
                     VectorY = 0;
                     break;
@@ -102,9 +102,9 @@ namespace Osmos
             }
         }
 
-        private void SetAreaByRadius(double radius)
+        public void SetRadiusByArea(double area)
         {
-            Area = radius * radius * Math.PI;
+            Radius = Math.Sqrt(area / Math.PI);
         }
 
         public void SetNewVector(double vectorX, double vectorY)
@@ -127,10 +127,10 @@ namespace Osmos
                 PositionY = (Radius + newCirclesRadius) * Math.Sin(offsetAngle) + PositionY,
                 VectorX = Math.Cos(offsetAngle) * 20,
                 VectorY = Math.Sin(offsetAngle) * 20,
-                Area = newCirclesRadius * newCirclesRadius * Math.PI
+                Radius = newCirclesRadius
             };
 
-            Area -= newEnemyCircle.Area;
+            SetRadiusByArea(Area - newEnemyCircle.Area);
 
             VectorX += (VectorX - newEnemyCircle.VectorX * newEnemyCircle.Area) / Area;
             VectorY += (VectorY - newEnemyCircle.VectorY * newEnemyCircle.Area) / Area;
@@ -153,8 +153,8 @@ namespace Osmos
 
         public double GetDistanceToObject(Circle circle)
         {
-            double componentX = (PositionX - circle.PositionX) * (PositionX - circle.PositionX);
-            double componentY = (PositionY - circle.PositionY) * (PositionY - circle.PositionY);
+            double componentX = (PositionX * PositionX - 2 * circle.PositionX * PositionX + circle.PositionX * circle.PositionX);
+            double componentY = (PositionY * PositionY - 2 * circle.PositionY * PositionY + circle.PositionY * circle.PositionY);
 
             return componentX + componentY;
         }
