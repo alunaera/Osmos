@@ -153,8 +153,8 @@ namespace Osmos
 
         public double GetDistanceToObject(Circle circle)
         {
-            double componentX = (PositionX * PositionX - 2 * circle.PositionX * PositionX + circle.PositionX * circle.PositionX);
-            double componentY = (PositionY * PositionY - 2 * circle.PositionY * PositionY + circle.PositionY * circle.PositionY);
+            double componentX = (PositionX - circle.PositionX) * (PositionX - circle.PositionX);
+            double componentY = (PositionY - circle.PositionY) * (PositionY - circle.PositionY);
 
             return componentX + componentY;
         }
