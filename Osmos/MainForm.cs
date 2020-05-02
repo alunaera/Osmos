@@ -20,7 +20,6 @@ namespace Osmos
 
             game.Defeat += () =>
             {
-                gameField.Refresh();
                 Timer.Enabled = false;
                 isMouseDowned = false;
                 MessageBox.Show("Game over");
@@ -30,7 +29,6 @@ namespace Osmos
 
             game.Victory += () =>
             {
-                gameField.Refresh();
                 Timer.Enabled = false;
                 isMouseDowned = false;
                 MessageBox.Show("You win");

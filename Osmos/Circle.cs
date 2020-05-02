@@ -130,10 +130,13 @@ namespace Osmos
                 Radius = newCirclesRadius
             };
 
+            double previousImpulseX = VectorX * Area;
+            double previousImpulseY = VectorY * Area;
+
             SetRadiusByArea(Area - newEnemyCircle.Area);
 
-            VectorX += (VectorX - newEnemyCircle.VectorX * newEnemyCircle.Area) / Area;
-            VectorY += (VectorY - newEnemyCircle.VectorY * newEnemyCircle.Area) / Area;
+            VectorX = (previousImpulseX - newEnemyCircle.VectorX * newEnemyCircle.Area) / Area;
+            VectorY = (previousImpulseY - newEnemyCircle.VectorY * newEnemyCircle.Area) / Area;
 
             return newEnemyCircle;
         }
