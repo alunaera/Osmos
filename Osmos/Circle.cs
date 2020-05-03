@@ -62,25 +62,25 @@ namespace Osmos
                     if (PositionX - Radius < 0)
                     {
                         PositionX = Radius;
-                        SetOppositeVector(VectorDirection.X);
+                        VectorX = -VectorX;
                     }
 
                     if (PositionY - Radius < 0)
                     {
                         PositionY = Radius;
-                        SetOppositeVector(VectorDirection.Y);
+                        VectorY = -VectorY;
                     }
 
                     if (PositionX + Radius >= gameFieldWidth)
                     {
                         PositionX = gameFieldWidth - Radius;
-                        SetOppositeVector(VectorDirection.X);
+                        VectorX = -VectorX;
                     }
 
                     if (PositionY + Radius >= gameFieldHeight)
                     {
                         PositionY = gameFieldHeight - Radius;
-                        SetOppositeVector(VectorDirection.Y);
+                        VectorY = -VectorY;
                     }
 
                     break;
@@ -141,20 +141,7 @@ namespace Osmos
             return newEnemyCircle;
         }
 
-        private void SetOppositeVector(VectorDirection vectorDirection)
-        {
-            switch (vectorDirection)
-            {
-                case VectorDirection.X:
-                    VectorX = -VectorX;
-                    break;
-                case VectorDirection.Y:
-                    VectorY = -VectorY;
-                    break;
-            }
-        }
-
-        public double GetDistanceToObject(Circle circle)
+        public double GetSqrDistanceToObject(Circle circle)
         {
             double componentX = (PositionX - circle.PositionX) * (PositionX - circle.PositionX);
             double componentY = (PositionY - circle.PositionY) * (PositionY - circle.PositionY);

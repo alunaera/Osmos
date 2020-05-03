@@ -77,13 +77,13 @@ namespace Osmos
                     Circle nextCircle = circles[j];
 
                     if (!((circle.Radius + nextCircle.Radius) * (circle.Radius + nextCircle.Radius)
-                          > circle.GetDistanceToObject(nextCircle))) 
+                          > circle.GetSqrDistanceToObject(nextCircle))) 
                         continue;
 
                     if (circle.Radius >= nextCircle.Radius)
-                        Absorbing(circle, nextCircle);
+                        Absorb(circle, nextCircle);
                     else
-                        Absorbing(nextCircle, circle);
+                        Absorb(nextCircle, circle);
                 }
             }
 
@@ -99,13 +99,13 @@ namespace Osmos
                 Victory();
         }
 
-        private static void Absorbing(Circle largerCircle, Circle smallerCircle)
+        private static void Absorb(Circle largerCircle, Circle smallerCircle)
         {
-            double distance = largerCircle.GetDistanceToObject(smallerCircle);
+            double sqrDistance = largerCircle.GetSqrDistanceToObject(smallerCircle);
             double previousLargerCircleArea = largerCircle.Area;
             double previousSmallerCircleArea = smallerCircle.Area;
 
-            if ((largerCircle.Radius - smallerCircle.Radius) * (largerCircle.Radius - smallerCircle.Radius) > distance)
+            if ((largerCircle.Radius - smallerCircle.Radius) * (largerCircle.Radius - smallerCircle.Radius) > sqrDistance)
             {
                 largerCircle.SetRadiusByArea(largerCircle.Area + smallerCircle.Area);
                 smallerCircle.Radius = 0;
@@ -113,7 +113,7 @@ namespace Osmos
             else
             {
                 smallerCircle.Radius = GetNewRadiusSmallerCircle(largerCircle.Radius,
-                    smallerCircle.Radius, largerCircle.Radius + smallerCircle.Radius - Math.Sqrt(distance));
+                    smallerCircle.Radius, largerCircle.Radius + smallerCircle.Radius - Math.Sqrt(sqrDistance));
                 largerCircle.SetRadiusByArea(largerCircle.Area + previousSmallerCircleArea - smallerCircle.Area);
             }
 
