@@ -8,8 +8,8 @@ namespace Osmos
         private readonly int gameFieldWidth;
         private readonly int gameFieldHeight;
 
-        private double PositionX { get; set; }
-        private double PositionY { get; set; }
+        public double PositionX { get; set; }
+        public double PositionY { get; set; }
 
         public CircleType CircleType { get; }
         public double VectorX { get; private set; }
