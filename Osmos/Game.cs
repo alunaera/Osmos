@@ -12,10 +12,11 @@ namespace Osmos
 
         private int gameFieldWidth;
         private int gameFieldHeight;
-        private double fps;
         private int delayOfShot;
+        private double fps;
         private GameMode gameMode;
         private List<Circle> circles;
+
         private double SummaryArea => circles.Sum(circle => circle.Area);
         private Circle PlayerCircle => circles[0];
 
@@ -64,11 +65,10 @@ namespace Osmos
         public void Update(double fps)
         {
             this.fps = fps;
+            List<Circle> workList = Optimize();
 
             foreach (Circle circle in circles)
                 circle.Update(gameMode);
-
-            List<Circle> workList = Optimize(circles);
 
             for (int i = 0; i < workList.Count; i++)
             {
@@ -101,16 +101,15 @@ namespace Osmos
                 Victory();
         }
 
-        private List<Circle> Optimize(List<Circle> circleList)
+        private List<Circle> Optimize()
         {
             List<Circle> workList = new List<Circle>();
-            List<CirclesEdge> circlesEdges = new List<CirclesEdge>(circleList.Count * 2);
+            List<CirclesEdge> circlesEdges = new List<CirclesEdge>(circles.Count * 2);
 
-            for (int i = 0; i < circleList.Count; i++)
+            for (int i = 0; i < circles.Count; i++)
             {
-                circlesEdges.Add(new CirclesEdge(i, circleList[i].PositionX - circleList[i].Radius, Direction.Left));
-                circlesEdges.Add(new CirclesEdge(i, circleList[i].PositionX + circleList[i].Radius, Direction.Right));
-                
+                circlesEdges.Add(new CirclesEdge(i, circles[i].PositionX - circles[i].Radius, Direction.Left));
+                circlesEdges.Add(new CirclesEdge(i, circles[i].PositionX + circles[i].Radius, Direction.Right));
             }
 
             circlesEdges.OrderBy(circlesEdge => circlesEdge.Position);
@@ -118,8 +117,11 @@ namespace Osmos
             for (int i = 0; i < circlesEdges.Count - 1; i++)
             {
                 if(circlesEdges[i].CirclesNumber != circlesEdges[i + 1].CirclesNumber)
-                    workList.Add(circleList[i / 2]);
+                    workList.Add(circles[i / 2]);
             }
+
+            // It's for correct last circle's adding work list
+            workList.Add(circles[(circlesEdges.Count - 1) / 2]);
 
             return workList;
         }
