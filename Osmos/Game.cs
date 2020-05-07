@@ -68,22 +68,24 @@ namespace Osmos
             foreach (Circle circle in circles)
                 circle.Update(gameMode);
 
-            for (int i = 0; i < circles.Count; i++)
+            List<Circle> workList = Optimize(circles);
+
+            for (int i = 0; i < workList.Count; i++)
             {
-                Circle circle = circles[i];
+                Circle circle = workList[i];
 
-                for (int j = i; j < circles.Count; j++)
+                for (int j = i; j < workList.Count; j++)
                 {
-                    Circle nextCircle = circles[j];
+                    Circle nextCircle = workList[j];
 
-                    if (!((circle.Radius + nextCircle.Radius) * (circle.Radius + nextCircle.Radius)
-                          > circle.GetSqrDistanceToObject(nextCircle))) 
-                        continue;
-
-                    if (circle.Radius >= nextCircle.Radius)
-                        Absorb(circle, nextCircle);
-                    else
-                        Absorb(nextCircle, circle);
+                    if ((circle.Radius + nextCircle.Radius) * (circle.Radius + nextCircle.Radius)
+                        > circle.GetSqrDistanceToObject(nextCircle))
+                    {
+                        if (circle.Radius >= nextCircle.Radius)
+                            Absorb(circle, nextCircle);
+                        else
+                            Absorb(nextCircle, circle);
+                    }
                 }
             }
 
@@ -97,6 +99,29 @@ namespace Osmos
 
             if (PlayerCircle.Area > SummaryArea / 2)
                 Victory();
+        }
+
+        private List<Circle> Optimize(List<Circle> circleList)
+        {
+            List<Circle> workList = new List<Circle>();
+            List<CirclesEdge> circlesEdges = new List<CirclesEdge>(circleList.Count * 2);
+
+            for (int i = 0; i < circleList.Count; i++)
+            {
+                circlesEdges.Add(new CirclesEdge(i, circleList[i].PositionX - circleList[i].Radius, Direction.Left));
+                circlesEdges.Add(new CirclesEdge(i, circleList[i].PositionX + circleList[i].Radius, Direction.Right));
+                
+            }
+
+            circlesEdges.OrderBy(circlesEdge => circlesEdge.Position);
+
+            for (int i = 0; i < circlesEdges.Count - 1; i++)
+            {
+                if(circlesEdges[i].CirclesNumber != circlesEdges[i + 1].CirclesNumber)
+                    workList.Add(circleList[i / 2]);
+            }
+
+            return workList;
         }
 
         private static void Absorb(Circle largerCircle, Circle smallerCircle)

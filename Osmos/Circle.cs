@@ -8,8 +8,8 @@ namespace Osmos
         private readonly int gameFieldWidth;
         private readonly int gameFieldHeight;
 
-        private double PositionX { get; set; }
-        private double PositionY { get; set; }
+        public double PositionX { get; private set; }
+        public double PositionY { get; private set; }
 
         public CircleType CircleType { get; }
         public double VectorX { get; private set; }
@@ -43,6 +43,19 @@ namespace Osmos
                     VectorY = 0;
                     break;
             }
+        }
+
+        public Circle(Circle circle)
+        {
+            gameFieldWidth = circle.gameFieldWidth;
+            gameFieldHeight = circle.gameFieldHeight;
+
+            CircleType = circle.CircleType;
+            PositionX = circle.PositionX;
+            PositionY = circle.PositionY;
+            VectorX = circle.VectorX;
+            VectorY = circle.VectorY;
+            Radius = circle.Radius;
         }
 
         public void Update(GameMode gameMode)
