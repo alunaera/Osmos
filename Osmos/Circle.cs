@@ -45,19 +45,6 @@ namespace Osmos
             }
         }
 
-        public Circle(Circle circle)
-        {
-            gameFieldWidth = circle.gameFieldWidth;
-            gameFieldHeight = circle.gameFieldHeight;
-
-            CircleType = circle.CircleType;
-            PositionX = circle.PositionX;
-            PositionY = circle.PositionY;
-            VectorX = circle.VectorX;
-            VectorY = circle.VectorY;
-            Radius = circle.Radius;
-        }
-
         public void Update(GameMode gameMode)
         {
             PositionX += VectorX;

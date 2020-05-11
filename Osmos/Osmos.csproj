@@ -46,8 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CirclesEdge.cs" />
-    <Compile Include="Direction.cs" />
     <Compile Include="GameMode.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Circle.cs" />

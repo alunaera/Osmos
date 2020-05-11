@@ -49,13 +49,13 @@ namespace Osmos
 
                 case GameMode.ManyCircles:
                     circles.Add(new Circle(gameFieldWidth, gameFieldHeight, CircleType.PlayerCircle));
-                    PlayerCircle.Radius = 5;
+                    PlayerCircle.Radius = 6;
 
-                    circlesCount = 10000;
+                    circlesCount = 30000;
                     for (int i = 0; i < circlesCount; i++)
                     {
                         circles.Add(new Circle(gameFieldWidth, gameFieldHeight, CircleType.EnemyCircle));
-                        circles[i + 1].Radius = 3;
+                        circles[i + 1].Radius = 2;
                     }
                     break;
             }
@@ -68,28 +68,7 @@ namespace Osmos
             foreach (Circle circle in circles)
                 circle.Update(gameMode);
 
-            List<Circle> workList = Optimize(circles);
-
-            for (int i = 0; i < workList.Count; i++)
-            {
-                Circle circle = workList[i];
-
-                for (int j = i; j < workList.Count; j++)
-                {
-                    Circle nextCircle = workList[j];
-
-                    if ((circle.Radius + nextCircle.Radius) * (circle.Radius + nextCircle.Radius)
-                        > circle.GetSqrDistanceToObject(nextCircle))
-                    {
-                        if (circle.Radius >= nextCircle.Radius)
-                            Absorb(circle, nextCircle);
-                        else
-                            Absorb(nextCircle, circle);
-                    }
-                }
-            }
-
-            circles.RemoveAll(circle => circle.CircleType != CircleType.PlayerCircle && circle.Area <= 0);
+            ProcessAbsorb();
 
             if (delayOfShot > 0)
                 delayOfShot--;
@@ -101,27 +80,47 @@ namespace Osmos
                 Victory();
         }
 
-        private List<Circle> Optimize(List<Circle> circleList)
+        private void ProcessAbsorb()
         {
+            List<Circle>[] leftEdges = new List<Circle>[gameFieldWidth + 5];
+            List<Circle>[] rightEdges = new List<Circle>[gameFieldWidth + 5];
+
+            for (int i = 0; i < gameFieldWidth + 5; ++i)
+            {
+                leftEdges[i] = new List<Circle>();
+                rightEdges[i] = new List<Circle>();
+            }
+
+            foreach (var circle in circles)
+            {
+                leftEdges[Math.Max(0, (int) (circle.PositionX - Math.Abs(circle.Radius)))].Add(circle);
+                rightEdges[Math.Min((int) (circle.PositionX + Math.Abs(circle.Radius)), gameFieldWidth)].Add(circle);
+            }
+
             List<Circle> workList = new List<Circle>();
-            List<CirclesEdge> circlesEdges = new List<CirclesEdge>(circleList.Count * 2);
 
-            for (int i = 0; i < circleList.Count; i++)
+            for (int i = 0; i < gameFieldWidth; i++)
             {
-                circlesEdges.Add(new CirclesEdge(i, circleList[i].PositionX - circleList[i].Radius, Direction.Left));
-                circlesEdges.Add(new CirclesEdge(i, circleList[i].PositionX + circleList[i].Radius, Direction.Right));
-                
+                foreach (Circle circle in workList)
+                {
+                    foreach (Circle nextCircle in leftEdges[i])
+                    {
+                        if ((circle.Radius + nextCircle.Radius) * (circle.Radius + nextCircle.Radius)
+                              > circle.GetSqrDistanceToObject(nextCircle))
+                        {
+                            if (circle.Radius >= nextCircle.Radius)
+                                Absorb(circle, nextCircle);
+                            else
+                                Absorb(nextCircle, circle);
+                        }
+                    }
+                }
+
+                workList.AddRange(leftEdges[i]);
+                workList.RemoveAll(circle => rightEdges[i].Contains(circle));
             }
 
-            circlesEdges.OrderBy(circlesEdge => circlesEdge.Position);
-
-            for (int i = 0; i < circlesEdges.Count - 1; i++)
-            {
-                if(circlesEdges[i].CirclesNumber != circlesEdges[i + 1].CirclesNumber)
-                    workList.Add(circleList[i / 2]);
-            }
-
-            return workList;
+            circles.RemoveAll(circle => circle.CircleType != CircleType.PlayerCircle && circle.Area <= 0);
         }
 
         private static void Absorb(Circle largerCircle, Circle smallerCircle)
